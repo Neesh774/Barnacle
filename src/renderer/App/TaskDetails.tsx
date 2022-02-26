@@ -199,6 +199,8 @@ export function TaskDetails({
 					</Button>
 				</div>
 			)
+		case "waitForElement":
+
 		default:
 			return <div>Unknown task type</div>
 	}

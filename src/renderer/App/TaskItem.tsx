@@ -72,6 +72,15 @@ export function TaskItem({ task, index }: { task: Task; index: number }) {
 									index
 								)
 								break
+							case "scrollElement":
+								app.dispatch.editTask(
+									{
+										type: "scrollElement",
+										selector: "",
+										delta: { x: 0, y: 0 },
+									},
+									index
+								)
 						}
 						setSelectedType(taskOptions.find((t) => t.name === e.target.value))
 					}}
