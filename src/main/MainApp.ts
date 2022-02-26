@@ -68,6 +68,7 @@ function resizeWindow(
 	id: string,
 	size: { width: number; height: number }
 ): MainState {
+	console.log("resizing")
 	const { windows } = state
 	const { width, height } = size
 	return {
