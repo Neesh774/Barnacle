@@ -1,6 +1,13 @@
-import { Accordion, Button, TextInput, Title, ActionIcon } from "@mantine/core"
+import {
+	Accordion,
+	Button,
+	TextInput,
+	Title,
+	ActionIcon,
+	useAccordionState,
+} from "@mantine/core"
 import * as React from "react"
-import { BiPlus, BiTrash } from "react-icons/bi"
+import { BiPlus, BiTrash, BiChevronUp, BiChevronDown } from "react-icons/bi"
 import { useEnvironment } from "../Environment"
 import { useApp } from "../RendererApp"
 import { Task, taskOptions } from "../RendererState"
@@ -68,6 +75,13 @@ export function App() {
 	const [testSite, setTestSite] = React.useState("")
 	const [taskErrors, setTaskErrors] = React.useState(false)
 	const siteInput = React.useRef<HTMLInputElement | null>(null)
+	const [accState, handlers] = useAccordionState({
+		total: state.test.length,
+		initialItem:
+			state.submitStatus === "standby" && state.lastError
+				? state.lastError.index
+				: -1,
+	})
 
 	React.useEffect(() => {
 		setTaskErrors(
@@ -77,7 +91,10 @@ export function App() {
 				})
 			})
 		)
-	})
+		if (state.submitStatus === "standby" && state.lastError) {
+			handlers.toggle(state.lastError.index)
+		}
+	}, [taskErrors, state])
 
 	return (
 		<div style={{ display: "flex", height: "100%" }}>
@@ -105,7 +122,12 @@ export function App() {
 					<Title order={3} style={{ marginBottom: "0.4rem" }}>
 						Tasks
 					</Title>
-					<Accordion disableIconRotation multiple>
+					<Accordion
+						disableIconRotation
+						multiple
+						state={accState}
+						onChange={handlers.setState}
+					>
 						{state.test.map((task, i) => {
 							const taskSettings = taskOptions.find((t) => t.name === task.type)
 							return (
@@ -120,13 +142,15 @@ export function App() {
 											}}
 										>
 											{getSemanticName(task)}
-											<ActionIcon
-												color="red"
-												onClick={() => app.dispatch.removeTask(i)}
-												size="md"
-											>
-												<BiTrash size="20" />
-											</ActionIcon>
+											<div style={{ display: "flex", alignItems: "center" }}>
+												<ActionIcon
+													color="red"
+													onClick={() => app.dispatch.removeTask(i)}
+													size="md"
+												>
+													<BiTrash size="20" />
+												</ActionIcon>
+											</div>
 										</div>
 									}
 									icon={taskSettings?.icon}
