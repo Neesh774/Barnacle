@@ -1,10 +1,15 @@
 import {
 	Accordion,
+	ActionIcon,
 	Button,
+	Checkbox,
+	Code,
+	Divider,
+	Group,
+	NumberInput,
+	Text,
 	TextInput,
 	Title,
-	ActionIcon,
-	useAccordionState,
 } from "@mantine/core"
 import * as React from "react"
 import { BiPlus, BiTrash, BiChevronUp, BiChevronDown } from "react-icons/bi"
@@ -17,53 +22,53 @@ function getSemanticName(task: Task): JSX.Element {
 	switch (task.type) {
 		case "clickOnElement": {
 			return (
-				<span>
-					Click on element <code>{task.selector}</code>
-				</span>
+				<Text size="md">
+					Click on element <Code>{task.selector}</Code>
+				</Text>
 			)
 		}
 		case "clickOnElementWithText": {
 			return (
-				<span>
-					Click on element <code>{task.selector}</code> with text{" "}
-					<code>{task.text}</code>
-				</span>
+				<Text size="md">
+					Click on element <Code>{task.selector}</Code> with text{" "}
+					<Code>{task.text}</Code>
+				</Text>
 			)
 		}
 		case "typeText": {
 			return (
-				<span>
-					Type <code>{task.text}</code>
-				</span>
+				<Text size="md">
+					Type <Code>{task.text}</Code>
+				</Text>
 			)
 		}
 		case "shortcut": {
 			return (
-				<span>
-					Keyboard shortcut <code>{task.shortcut}</code>
-				</span>
+				<Text size="md">
+					Keyboard shortcut <Code>{task.shortcut}</Code>
+				</Text>
 			)
 		}
 		case "scrollElement": {
 			return (
-				<span>
-					Scroll element <code>{task.selector}</code>
-				</span>
+				<Text size="md">
+					Scroll element <Code>{task.selector}</Code>
+				</Text>
 			)
 		}
 		case "waitForElement": {
 			return (
-				<span>
-					Wait for element <code>{task.selector}</code> to appear
-				</span>
+				<Text size="md">
+					Wait for element <Code>{task.selector}</Code> to appear
+				</Text>
 			)
 		}
 		case "waitForElementWithText": {
 			return (
-				<span>
-					Wait for element <code>{task.selector}</code> with text{" "}
-					<code>{task.text}</code> to appear
-				</span>
+				<Text size="md">
+					Wait for element <Code>{task.selector}</Code> with text{" "}
+					<Code>{task.text}</Code> to appear
+				</Text>
 			)
 		}
 	}
@@ -72,7 +77,7 @@ function getSemanticName(task: Task): JSX.Element {
 export function App() {
 	const state = useApp((state) => state)
 	const { app } = useEnvironment()
-	const [testSite, setTestSite] = React.useState("")
+
 	const [taskErrors, setTaskErrors] = React.useState(false)
 	const siteInput = React.useRef<HTMLInputElement | null>(null)
 	const [accState, handlers] = useAccordionState({
@@ -172,13 +177,12 @@ export function App() {
 						New Task
 					</Button>
 				</div>
+				<Divider />
 				<div
 					style={{
 						padding: "0.6rem 1rem",
-						boxShadow: " 0px -2px 4px -2.5px rgba(0,0,0,0.75)",
 						width: "100%",
 						display: "flex",
-						justifyContent: "space-between",
 						alignItems: "center",
 					}}
 				>
@@ -193,6 +197,7 @@ export function App() {
 					>
 						Submit
 					</Button>
+					<div style={{ flex: "1 1 auto" }} />
 					<Button
 						onClick={() => {
 							app.dispatch.clearTasks()
@@ -207,52 +212,101 @@ export function App() {
 						Clear
 					</Button>
 				</div>
+				<Accordion>
+					<Accordion.Item label="Options">
+						<Group spacing={15} direction={"column"}>
+							<NumberInput
+								label="Task delay"
+								description="Delay between each task item"
+								value={state.options.delay}
+								onChange={(value) => {
+									app.dispatch.setOptions({
+										...state.options,
+										delay: value || 0,
+									})
+								}}
+							/>
+							<Checkbox
+								label="Highlight before click"
+								checked={state.options.highlightBeforeClick}
+								onChange={(event) => {
+									const checked = event.currentTarget.checked
+									app.dispatch.setOptions({
+										...state.options,
+										highlightBeforeClick: checked,
+									})
+								}}
+							/>
+						</Group>
+					</Accordion.Item>
+				</Accordion>
 			</div>
+			<Browser />
+		</div>
+	)
+}
+
+export function Browser() {
+	const [testSite, setTestSite] = React.useState("")
+	const siteInput = React.useRef<HTMLInputElement | null>(null)
+
+	return (
+		<div
+			className="preview"
+			style={{
+				display: "flex",
+				flex: "1 1 auto",
+				flexDirection: "column",
+			}}
+		>
 			<div
-				className="preview"
+				className="test-site"
 				style={{
 					display: "flex",
-					flexDirection: "column",
-					width: "70%",
-					padding: "2rem 4rem",
+					width: "100%",
+					borderBottom: "1px solid black",
 				}}
 			>
-				<div
-					className="test-site"
-					style={{
-						display: "flex",
-						width: "100%",
-						padding: "0.4rem 0",
-					}}
+				<TextInput
+					ref={siteInput}
+					placeholder="https://example.org"
+					style={{ flex: "1 1 auto" }}
+					type="url"
+					size="xs"
+				/>
+				<Button
+					style={{ marginLeft: "0.2rem" }}
+					onClick={(e: React.MouseEvent) =>
+						setTestSite(siteInput.current ? siteInput.current.value : "")
+					}
+					size="xs"
 				>
-					<TextInput
-						ref={siteInput}
-						style={{ flex: "1 1 auto" }}
-						type="url"
-						size="xs"
-					/>
-					<Button
-						style={{ marginLeft: "0.2rem" }}
-						onClick={(e: React.MouseEvent) =>
-							setTestSite(siteInput.current ? siteInput.current.value : "")
-						}
-						size="xs"
-					>
-						Load
-					</Button>
-				</div>
+					Load
+				</Button>
+			</div>
+			{testSite ? (
 				<iframe
 					id="iframe"
 					style={{
 						display: "flex",
 						width: "100%",
 						height: "100%",
-						border: "1px solid rgb(84,86,88)",
-						borderRadius: "4px",
 					}}
 					src={testSite}
-				></iframe>
-			</div>
+				/>
+			) : (
+				<div
+					style={{
+						backgroundColor: "lightgray",
+						display: "flex",
+						flex: "1 1 auto",
+						alignItems: "center",
+						justifyContent: "center",
+					}}
+				>
+					<Text>Load a website in the url to get started.</Text>
+				</div>
+			)}
 		</div>
 	)
 }

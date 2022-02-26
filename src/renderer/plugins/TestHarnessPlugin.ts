@@ -1,7 +1,7 @@
 import { MainToRendererIPC, RendererToMainIPC } from "../../shared/ipc"
 import { RendererAppPlugin } from "../RendererApp"
 import { RendererIPCPeer } from "../RendererIPC"
-import { Test } from "../RendererState"
+import { Test, TestOptions } from "../RendererState"
 
 export const TestHarnessPlugin =
 	(
@@ -10,11 +10,11 @@ export const TestHarnessPlugin =
 	(app) => {
 		const submittedTests = new Set<Test>()
 
-		async function submitTest(test: Test) {
+		async function submitTest(test: Test, options: TestOptions) {
 			if (submittedTests.has(test)) return
 			submittedTests.add(test)
 			try {
-				await main.call.runTest(test)
+				await main.call.runTest(test, options)
 			} catch (e) {
 				console.error(e)
 			}
@@ -27,8 +27,8 @@ export const TestHarnessPlugin =
 					app.state.submitStatus === "submitting" &&
 					prevState.submitStatus === "standby"
 				) {
-					const tasks = app.state.test
-					submitTest(tasks)
+					const { test, options } = app.state
+					submitTest(test, options)
 				}
 			},
 			destroy() {

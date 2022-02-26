@@ -147,9 +147,14 @@ function setupMainActions(main: MainHarness, app: RendererApp) {
 
 async function main() {
 	const main = setupMain()
-	const app = new RendererApp({ test: [], submitStatus: "standby" }, [
-		TestHarnessPlugin(main),
-	])
+	const app = new RendererApp(
+		{
+			test: [],
+			submitStatus: "standby",
+			options: { delay: 1000, highlightBeforeClick: false },
+		},
+		[TestHarnessPlugin(main)]
+	)
 	setupMainActions(main, app)
 
 	const environment: Environment = {

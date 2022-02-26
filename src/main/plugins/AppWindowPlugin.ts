@@ -88,9 +88,9 @@ class AppWindow {
 			this.browserWindow
 		)
 
-		this.ipc.answer.runTest(async (test) => {
+		this.ipc.answer.runTest(async (test, options) => {
 			const { x, y, height, width } = this.browserWindow.getContentBounds()
-			runTest(test, this.ipc, { top: y, left: x, height, width })
+			runTest(test, this.ipc, { top: y, left: x, height, width }, options)
 		})
 	}
 

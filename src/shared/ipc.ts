@@ -1,12 +1,12 @@
 // TODO: don't extends this interface...
 
-import { Task, TaskError } from "../renderer/RendererState"
+import { Task, TaskError, TestOptions } from "../renderer/RendererState"
 import { PointDelta, Rect } from "./rectHelpers"
 
 export const ipcChannel = "custom-ipc-channel"
 
 export type RendererToMainIPC = {
-	runTest(test: Task[]): void
+	runTest(test: Task[], options: TestOptions): void
 }
 
 export type MainToRendererIPC = {

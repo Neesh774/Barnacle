@@ -6,7 +6,7 @@ import {
 } from "../StateMachine"
 import { useEnvironment } from "./Environment"
 import { useStateMachine } from "./hooks/useStateMachine"
-import { RendererState, Task, TaskError } from "./RendererState"
+import { RendererState, Task, TaskError, TestOptions } from "./RendererState"
 
 function appendTask(state: RendererState, task: Task): RendererState {
 	return {
@@ -75,11 +75,17 @@ function endTest(state: RendererState, error?: TaskError): RendererState {
 	return { ...state, submitStatus: "standby", lastError: error }
 }
 
+function setOptions(state: RendererState, options: TestOptions): RendererState {
+	return { ...state, options }
+}
+
 const rendererReducers = {
 	appendTask,
 	removeTask,
 	editTask,
 	clearTasks,
+
+	setOptions,
 
 	startSubmittingTest,
 	cancelSubmittingTest,
