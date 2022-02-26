@@ -48,7 +48,7 @@ function removeTask(state: RendererState, index: number): RendererState {
 }
 
 function startSubmittingTest(state: RendererState): RendererState {
-	return { ...state, submitStatus: "submitting", runningTaskIndex: 0 }
+	return { ...state, submitStatus: "submitting" }
 }
 
 function finishSubmittingTest(

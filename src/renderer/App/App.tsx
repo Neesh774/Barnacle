@@ -1,4 +1,11 @@
-import { Button, Overlay, TextInput, Title, Timeline } from "@mantine/core"
+import {
+	Button,
+	Overlay,
+	TextInput,
+	Title,
+	Timeline,
+	ActionIcon,
+} from "@mantine/core"
 import * as React from "react"
 import { BiMouseAlt, BiPlus, BiText, BiTrash } from "react-icons/bi"
 import { useEnvironment } from "../Environment"
@@ -64,7 +71,28 @@ export function App() {
 							{state.test.map((task, i) => {
 								return (
 									<Timeline.Item
-										title={`Task ${i + 1}`}
+										title={
+											<div
+												style={{
+													display: "flex",
+													justifyContent: "space-between",
+												}}
+											>
+												<Title order={5} style={{ marginRight: "0.5rem" }}>
+													{state.submitStatus === "submitting" &&
+													state.runningTaskIndex === i
+														? "Running "
+														: ""}
+													Task {i + 1}
+												</Title>
+												<ActionIcon
+													color="red"
+													onClick={() => app.dispatch.removeTask(i)}
+												>
+													<BiTrash style={{ width: 16, height: 16 }} />
+												</ActionIcon>
+											</div>
+										}
 										bullet={
 											task.type === "typeText" ? (
 												<BiText size={12} />

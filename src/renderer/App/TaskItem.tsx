@@ -47,7 +47,6 @@ export function TaskItem({ task, index }: { task: Task; index: number }) {
 			<div
 				style={{
 					display: "flex",
-					justifyContent: "space-between",
 					marginBottom: "0.2rem",
 					alignItems: "center",
 				}}
@@ -82,9 +81,6 @@ export function TaskItem({ task, index }: { task: Task; index: number }) {
 					placeholder="Pick a task"
 					label="Task Type"
 				/>
-				<ActionIcon color="red" onClick={() => app.dispatch.removeTask(index)}>
-					<BiTrash style={{ width: 16, height: 16 }} />
-				</ActionIcon>
 			</div>
 
 			<TaskDetails
