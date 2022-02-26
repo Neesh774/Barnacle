@@ -57,51 +57,9 @@ export function App() {
 						Tasks
 					</Title>
 					<div style={{ position: "relative" }}>
-						<Timeline
-							active={
-								state.submitStatus === "running" ? state.runningTaskIndex : -1
-							}
-							bulletSize={24}
-							lineWidth={1}
-						>
-							{state.test.map((task, i) => {
-								return (
-									<Timeline.Item
-										title={
-											<div
-												style={{
-													display: "flex",
-													justifyContent: "space-between",
-												}}
-											>
-												<Title order={5} style={{ marginRight: "0.5rem" }}>
-													{state.submitStatus === "running" &&
-													state.runningTaskIndex === i
-														? "Running "
-														: ""}
-													Task {i + 1}
-												</Title>
-												<ActionIcon
-													color="red"
-													onClick={() => app.dispatch.removeTask(i)}
-												>
-													<BiTrash style={{ width: 16, height: 16 }} />
-												</ActionIcon>
-											</div>
-										}
-										bullet={
-											task.type === "typeText" ? (
-												<BiText size={12} />
-											) : (
-												<BiMouseAlt size={12} />
-											)
-										}
-									>
-										<TaskItem index={i} key={i} task={task} />
-									</Timeline.Item>
-								)
-							})}
-						</Timeline>
+						{state.test.map((task, i) => {
+							return <TaskItem index={i} key={i} task={task} />
+						})}
 					</div>
 					<Button
 						onClick={() => {
