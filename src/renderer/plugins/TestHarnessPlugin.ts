@@ -24,6 +24,8 @@ export const TestHarnessPlugin =
 					submitTest(tasks)
 				}
 			},
-			destroy() {},
+			destroy() {
+				submittedTests.clear()
+			},
 		}
 	}

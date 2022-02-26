@@ -1,13 +1,17 @@
 import * as nut from "@nut-tree/nut-js"
-import { Task, Test } from "../renderer/RendererState"
-import { Edge, Point, Rect, rectToPoint } from "../shared/rectHelpers"
-import { RendererHarness } from "./TestHarness"
+import { Task, Test } from "../../renderer/RendererState"
+import { MainToRendererIPC, RendererToMainIPC } from "../../shared/ipc"
+import { Edge, Point, Rect, rectToPoint } from "../../shared/rectHelpers"
+import { MainIPCPeer } from "../MainIPC"
 
 nut.keyboard.config.autoDelayMs = 100
 nut.mouse.config.autoDelayMs = 100
 nut.mouse.config.mouseSpeed = 1000
 
-export async function runTest(test: Test, renderer: RendererHarness) {
+export async function runTest(
+	test: Test,
+	renderer: MainIPCPeer<MainToRendererIPC, RendererToMainIPC>
+) {
 	for (const task of test) {
 		await runTask(task, renderer)
 		await sleep(100)
@@ -51,7 +55,10 @@ async function waitFor<T>(
 	throw error || new Error("waitFor timed out.")
 }
 
-async function runTask(task: Task, renderer: RendererHarness) {
+async function runTask(
+	task: Task,
+	renderer: MainIPCPeer<MainToRendererIPC, RendererToMainIPC>
+) {
 	async function measureElement(cssSelector: string) {
 		return await renderer.call.measureDOM(cssSelector)
 	}

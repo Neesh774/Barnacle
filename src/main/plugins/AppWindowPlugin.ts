@@ -14,6 +14,7 @@ import { MainAppPlugin } from "../MainApp"
 import { MainEnvironment } from "../MainEnvironment"
 import { MainIPCPeer } from "../MainIPC"
 import { MainState, WindowState } from "../MainState"
+import { runTest } from "./runTest"
 
 export const AppWindowPlugin =
 	(environment: Omit<MainEnvironment, "app">): MainAppPlugin =>
@@ -86,6 +87,8 @@ class AppWindow {
 		this.ipc = new MainIPCPeer<MainToRendererIPC, RendererToMainIPC>(
 			this.browserWindow
 		)
+
+		this.ipc.answer.runTest((test) => runTest)
 	}
 
 	updateState(nextState: WindowState) {
