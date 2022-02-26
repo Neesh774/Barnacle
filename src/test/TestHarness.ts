@@ -5,15 +5,14 @@ import { RendererAction, RendererApp } from "../renderer/RendererApp"
 import { RendererState, Task } from "../renderer/RendererState"
 import { DeferredPromise } from "../shared/DeferredPromise"
 import { createProxy } from "../shared/proxyHelpers"
+import { Rect } from "../shared/rectHelpers"
 import { Answerer, AnyFunctionMap, Caller } from "../shared/typeHelpers"
 import { StateMachine } from "../StateMachine"
 import { randomId } from "../utils"
 
-type Rect = { x: number; y: number; width: number; height: number }
-
 type HarnessToRenderer = {
-	measureDOM(cssSelector: string): Rect | undefined
-	measureDOMWithText(cssSelector: string, text: string): Rect | undefined
+	measureDOM(cssSelector: string): Rect
+	measureDOMWithText(cssSelector: string, text: string): Rect
 	getState(): RendererState
 }
 
@@ -358,6 +357,8 @@ export class TestHarness extends StateMachine<
 				server.destroy()
 			}
 		}
+
+		// harness.renderers[0].answer.runTest()
 
 		return harness
 	}

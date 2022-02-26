@@ -54,14 +54,14 @@ async function setupTestHarness(environment: Environment) {
 async function main() {
 	const { test, rect } = await callMain.load()
 
-	const app = new RendererApp({ tasks: [] }, [])
+	const app = new RendererApp({ test: [], submitStatus: "notSubmitting" }, [])
 
 	const environment: Environment = {
 		app,
 		harness: undefined,
 	}
 
-	environment.harness = test ? await setupTestHarness(environment) : undefined
+	environment.harness = await setupTestHarness(environment)
 
 	setupReactApp(environment)
 }

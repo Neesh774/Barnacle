@@ -6,7 +6,7 @@ export type TupleRest<T extends unknown[]> = T extends [any, ...infer U]
 	? U
 	: never
 
-type AnyReducers<S> = { [key: string]: (state: S, ...args: any[]) => S }
+export type AnyReducers<S> = { [key: string]: (state: S, ...args: any[]) => S }
 
 export type Actions<R extends AnyReducers<any>> = {
 	[K in keyof R]: { fn: K; args: TupleRest<Parameters<R[K]>> }

@@ -4,11 +4,14 @@ import {
 	EffectPlugin,
 	StateMachine,
 } from "../StateMachine"
+import { useEnvironment } from "./Environment"
+import { useStateMachine } from "./hooks/useStateMachine"
 import { RendererState, Task } from "./RendererState"
 
 function appendTask(state: RendererState, task: Task): RendererState {
 	return {
-		tasks: [...state.tasks, task],
+		...state,
+		test: [...state.test, task],
 	}
 }
 
@@ -17,18 +20,24 @@ function editTask(
 	newTask: Task,
 	index: number
 ): RendererState {
-	const newTasks = [...state.tasks]
+	const newTasks = [...state.test]
 	newTasks[index] = newTask
 	return {
-		tasks: newTasks,
+		...state,
+		test: newTasks,
 	}
 }
 
 function removeTask(state: RendererState, task: Task): RendererState {
-	const newTasks = state.tasks.filter((oldTask) => oldTask !== task)
+	const newTasks = state.test.filter((oldTask) => oldTask !== task)
 	return {
-		tasks: newTasks,
+		...state,
+		test: newTasks,
 	}
+}
+
+function startSubmittingTest(state: RendererState): RendererState {
+	return { ...state, submitStatus: "submitting" }
 }
 
 const rendererReducers = {
@@ -52,4 +61,9 @@ export class RendererApp extends StateMachine<
 	constructor(initialState: RendererState, plugins: RendererAppPlugin[] = []) {
 		super(initialState, rendererReducers, plugins)
 	}
+}
+
+export function useApp() {
+	const { app } = useEnvironment()
+	return useStateMachine(app, (state) => state)
 }

@@ -13,6 +13,9 @@ export type Task =
 			text: string
 	  }
 
+export type Test = Task[]
+
 export type RendererState = {
-	tasks: Task[]
+	test: Test
+	submitStatus: "notSubmitting" | "submitting"
 }
