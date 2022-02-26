@@ -1,7 +1,7 @@
 // TODO: don't extends this interface...
 
 import { Task, TaskError } from "../renderer/RendererState"
-import { Rect } from "./rectHelpers"
+import { PointDelta, Rect } from "./rectHelpers"
 
 export const ipcChannel = "custom-ipc-channel"
 
@@ -12,6 +12,7 @@ export type RendererToMainIPC = {
 export type MainToRendererIPC = {
 	measureDOM(cssSelector: string): Rect
 	measureDOMWithText(cssSelector: string, text: string): Rect
+	scrollElement(cssSelector: string, delta: PointDelta): void
 
 	startTest(): void
 	incrementTaskIndex(): void

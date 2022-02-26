@@ -61,7 +61,7 @@ type MainHarness = RendererIPCPeer<RendererToMainIPC, MainToRendererIPC>
 function setupMain() {
 	const main = new RendererIPCPeer<RendererToMainIPC, MainToRendererIPC>()
 
-	main.answer.measureDOM((selector) => {
+	function getElement(selector: string): HTMLElement {
 		const frames = window.frames.top
 		if (!frames) {
 			throw new Error(`Frame not found`)
@@ -72,6 +72,27 @@ function setupMain() {
 		if (!node) {
 			throw new Error(`No element found for selector ${selector}`)
 		}
+		return node as HTMLElement
+	}
+
+	function getElementWithText(selector: string, text: string) {
+		const frames = window.frames.top
+		if (!frames) {
+			throw new Error(`Frame not found`)
+		}
+		const iframe = frames[0].document
+		const nodes = Array.from(iframe.querySelectorAll(selector)) as HTMLElement[]
+		const node = nodes.find((elm) => elm.innerText.includes(text))
+		if (!node)
+			throw new Error(
+				`No element found for selector ${selector} containing text ${text}`
+			)
+		return node as HTMLElement
+	}
+
+	main.answer.measureDOM((selector) => {
+		const node = getElement(selector)
+
 		const { top, left, width, height } = node.getBoundingClientRect()
 
 		const iframeElm = document.getElementById("iframe")
@@ -87,17 +108,7 @@ function setupMain() {
 	})
 
 	main.answer.measureDOMWithText((selector, text) => {
-		const frames = window.frames.top
-		if (!frames) {
-			throw new Error(`Frame not found`)
-		}
-		const iframe = frames[0].document
-		const nodes = Array.from(iframe.querySelectorAll(selector)) as HTMLElement[]
-		const node = nodes.find((elm) => elm.innerText.includes(text))
-		if (!node)
-			throw new Error(
-				`No element found for selector ${selector} containing text ${text}`
-			)
+		const node = getElementWithText(selector, text)
 		const { top, left, width, height } = node.getBoundingClientRect()
 
 		const iframeElm = document.getElementById("iframe")
@@ -110,6 +121,11 @@ function setupMain() {
 			{ top, left, width, height },
 			{ x: iframeRect.left, y: iframeRect.top }
 		)
+	})
+
+	main.answer.scrollElement((selector, delta) => {
+		const node = getElement(selector)
+		node.scrollBy({ top: delta.y, left: delta.x })
 	})
 
 	return main

@@ -3,7 +3,7 @@ import * as React from "react"
 import { BiPlus, BiTrash } from "react-icons/bi"
 import { useEnvironment } from "../Environment"
 import { useApp } from "../RendererApp"
-import { TaskItem } from "./Task"
+import { TaskItem } from "./TaskItem"
 
 export function App() {
 	const state = useApp()
@@ -137,7 +137,7 @@ export function App() {
 					/>
 					<Button
 						style={{ marginLeft: "0.2rem" }}
-						onClick={(e) =>
+						onClick={(e: React.MouseEvent) =>
 							setTestSite(siteInput.current ? siteInput.current.value : "")
 						}
 						size="xs"

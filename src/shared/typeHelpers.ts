@@ -1,3 +1,4 @@
+export type Assert<A, B extends A> = {}
 export type AnyFunction = (...args: any[]) => any
 
 export type AnyFunctionMap = { [key: string]: AnyFunction }

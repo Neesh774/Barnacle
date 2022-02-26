@@ -22,21 +22,25 @@ function editTask(
 ): RendererState {
 	const newTasks = [...state.test]
 	newTasks[index] = newTask
-	console.log(newTasks);
-	state.submitStatus === "notSubmitting" && state.lastError && state.lastError.index == index ? state.lastError = null : '';
+	console.log(newTasks)
+	state.submitStatus === "notSubmitting" &&
+	state.lastError &&
+	state.lastError.index == index
+		? (state.lastError = null)
+		: ""
 	return {
 		...state,
 		test: newTasks,
 	}
 }
 
-function clearTasks(state): RendererState {
+function clearTasks(state: RendererState): RendererState {
 	return { ...state, test: [] }
 }
 
 function removeTask(state: RendererState, index: number): RendererState {
 	const newTasks = state.test.filter((_, i) => i !== index)
-	console.log(newTasks, index);
+	console.log(newTasks, index)
 	return {
 		...state,
 		test: newTasks,
@@ -47,14 +51,18 @@ function startSubmittingTest(state: RendererState): RendererState {
 	return { ...state, submitStatus: "submitting", runningTaskIndex: 0 }
 }
 
-function finishSubmittingTest(state: RendererState, error?: TaskError): RendererState {
+function finishSubmittingTest(
+	state: RendererState,
+	error?: TaskError
+): RendererState {
 	return { ...state, submitStatus: "notSubmitting", lastError: error }
 }
 
 function incrementRunningIndex(state: RendererState): RendererState {
-	return state.submitStatus === "submitting" ? { ...state, runningTaskIndex: state.runningTaskIndex + 1 } : state
+	return state.submitStatus === "submitting"
+		? { ...state, runningTaskIndex: state.runningTaskIndex + 1 }
+		: state
 }
-
 
 const rendererReducers = {
 	appendTask,
@@ -63,7 +71,7 @@ const rendererReducers = {
 	startSubmittingTest,
 	finishSubmittingTest,
 	incrementRunningIndex,
-	clearTasks
+	clearTasks,
 }
 
 export type RendererAction = Actions<typeof rendererReducers>
