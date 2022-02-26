@@ -1,6 +1,6 @@
 import { strict as assert } from "assert"
 import { describe } from "mocha"
-import { test as e2eTest } from "./testHelpers"
+import { e2eTest as e2eTest } from "./testHelpers"
 
 // The confusing part about this abstraction: inspecting multiple sources of truth.
 describe("App", function () {

@@ -9,6 +9,7 @@ import { Rect } from "../shared/rectHelpers"
 import { Answerer, AnyFunctionMap, Caller } from "../shared/typeHelpers"
 import { StateMachine } from "../StateMachine"
 import { randomId } from "../utils"
+import { runTest } from "./runTest"
 
 type HarnessToRenderer = {
 	measureDOM(cssSelector: string): Rect
@@ -358,7 +359,9 @@ export class TestHarness extends StateMachine<
 			}
 		}
 
-		// harness.renderers[0].answer.runTest()
+		const renderer = harness.renderers[0]
+
+		renderer.answer.runTest((test) => runTest(test, renderer))
 
 		return harness
 	}

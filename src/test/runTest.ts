@@ -3,9 +3,13 @@ import { Task, Test } from "../renderer/RendererState"
 import { Edge, Point, Rect, rectToPoint } from "../shared/rectHelpers"
 import { RendererHarness } from "./TestHarness"
 
-export async function runTest(test: Test, harness: RendererHarness) {
+nut.keyboard.config.autoDelayMs = 100
+nut.mouse.config.autoDelayMs = 100
+nut.mouse.config.mouseSpeed = 1000
+
+export async function runTest(test: Test, renderer: RendererHarness) {
 	for (const task of test) {
-		await runTask(task, harness)
+		await runTask(task, renderer)
 		await sleep(100)
 	}
 }
@@ -52,6 +56,15 @@ async function runTask(task: Task, renderer: RendererHarness) {
 		return await renderer.call.measureDOM(cssSelector)
 	}
 
+	async function measureElementWithText(cssSelector: string, text: string) {
+		return await renderer.call.measureDOMWithText(cssSelector, text)
+	}
+
+	async function type(str: string) {
+		await nut.keyboard.type(str)
+		await sleep(50)
+	}
+
 	async function waitForElement(cssSelector: string) {
 		await waitFor(async () => {
 			await measureElement(cssSelector)
@@ -65,20 +78,27 @@ async function runTask(task: Task, renderer: RendererHarness) {
 		await clickRect(rect, edge)
 	}
 
-	async function clickElementWithText(cssSelector: string, edge?: Edge) {
+	async function clickElementWithText(
+		cssSelector: string,
+		text: string,
+		edge?: Edge
+	) {
 		await waitForElement(cssSelector)
-		const rect = await measureElement(cssSelector)
+		const rect = await measureElementWithText(cssSelector, text)
 		await clickRect(rect, edge)
 	}
 
 	switch (task.type) {
 		case "clickOnElement": {
-			// Measure element
-			// rect to point,
 			await clickElement(task.selector)
 			return
 		}
 		case "clickOnElementWithText": {
+			await clickElementWithText(task.selector, task.text)
+			return
+		}
+		case "typeText": {
+			await type(task.text)
 		}
 	}
 }

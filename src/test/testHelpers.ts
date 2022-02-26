@@ -1,15 +1,10 @@
-import * as nut from "@nut-tree/nut-js"
 import * as child_process from "child_process"
 import { it } from "mocha"
 import { DeferredPromise } from "../shared/DeferredPromise"
 import { rootPath } from "../tools/rootPath"
 import { TestHarness } from "./TestHarness"
 
-nut.keyboard.config.autoDelayMs = 100
-nut.mouse.config.autoDelayMs = 100
-nut.mouse.config.mouseSpeed = 1000
-
-async function bootup(cliArgs: string[] = []) {
+export async function bootup(cliArgs: string[] = []) {
 	const harness = await TestHarness.create()
 
 	// Run the app.
@@ -45,9 +40,9 @@ async function bootup(cliArgs: string[] = []) {
 	})
 
 	// Monkey-patch destroy. Pretty gross...
-	const destory = harness.destroy
+	const destroy = harness.destroy
 	harness.destroy = async () => {
-		await destory()
+		await destroy()
 		child.kill("SIGINT")
 		await deferred.promise
 	}
@@ -57,7 +52,7 @@ async function bootup(cliArgs: string[] = []) {
 	return harness
 }
 
-export function test(
+export function e2eTest(
 	testName: string,
 	fn: (harness: TestHarness) => void | Promise<void>
 ) {

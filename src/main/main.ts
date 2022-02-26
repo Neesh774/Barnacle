@@ -1,4 +1,5 @@
 import { app, BrowserWindow } from "electron"
+import { TestHarness } from "../test/TestHarness"
 import { Config } from "./Config"
 import { MainApp } from "./MainApp"
 import { MainEnvironment } from "./MainEnvironment"
@@ -16,16 +17,18 @@ function setupConfig(): Config {
 async function setupTestHarness(config: Config) {
 	if (!config.test) return
 	const { connectMainToTestHarness } = await import("../test/TestHarness")
-	const harness = await connectMainToTestHarness()
-	return harness
+	const harness = await TestHarness.create()
+	await harness.waitUntilReady()
+	await connectMainToTestHarness()
+	// return harness
 }
 
 app.whenReady().then(async () => {
 	const config = setupConfig()
-	const harness = await setupTestHarness(config)
+	await setupTestHarness(config)
 	const mainApp = new MainApp([AppWindowPlugin({ config }), SystemMenuPlugin])
 
-	mainApp.onDispatch((action) => harness?.call.dispatchAction(action))
+	// mainApp.onDispatch((action) => harness?.call.dispatchAction(action))
 
 	const environment: MainEnvironment = { config, app: mainApp }
 
