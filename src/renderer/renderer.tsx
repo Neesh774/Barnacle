@@ -9,6 +9,27 @@ import { DisplayWindowRectPlugin } from "./plugins/DisplayWindowRectPlugin"
 import { SyncWindowRectPlugin } from "./plugins/SyncWindowRectPlugin"
 import { RendererApp } from "./RendererApp"
 import { callMain } from "./RendererIPC"
+import {} from "react-dom"
+
+const EnvironmentContext = createContext<Environment | undefined>(undefined)
+
+export function EnvironmentProvider(props: {
+	value: Environment
+	children: React.ReactNode
+}) {
+	return (
+		<EnvironmentContext.Provider value={props.value}>
+			{props.children}
+		</EnvironmentContext.Provider>
+	)
+}
+
+export function useEnvironment(): Environment {
+	const environment = useContext(EnvironmentContext)
+	if (!environment) throw new Error("Missing Environment")
+	return environment
+}
+
 
 async function setupTestHarness(app: RendererApp) {
 	const { connectRendererToTestHarness } = await import("../test/TestHarness")
@@ -17,11 +38,10 @@ async function setupTestHarness(app: RendererApp) {
 	harness.answer.measureDOM((css) => {
 		const node = document.querySelector(css)
 		if (!node) return
-		const { x, y, width, height } = node.getBoundingClientRect()
+		const rect = node.getBoundingClientRect()
 		// Offset the window position
-		const window = app.state.rect
-		const topbar = 25
-		return { x: x + window.x, y: topbar + y + window.y, width, height }
+		// const topbar = 25
+		return rect
 	})
 
 	harness.answer.getState(() => app.state)
@@ -33,10 +53,21 @@ async function setupTestHarness(app: RendererApp) {
 	return harness
 }
 
+function setupReactApp(app: RendererApp) {
+	const root = document.createElement("div")
+	document.body.prepend(root)
+	ReactDOM.render(
+		<EnvironmentProvider value={environment}>
+			<App initialScrollTop={undefined} />
+		</EnvironmentProvider>,
+		root
+	)
+}
+
 async function main() {
 	const { test, rect } = await callMain.load()
 
-	const app = new RendererApp({ rect }, [
+	const app = new RendererApp({tasks: []}, [
 		SyncWindowRectPlugin,
 		DisplayWindowRectPlugin,
 	])

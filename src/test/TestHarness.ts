@@ -2,7 +2,8 @@ import * as net from "net"
 import { deserializeError, serializeError } from "serialize-error"
 import { MainAction, MainApp } from "../main/MainApp"
 import { RendererAction, RendererApp } from "../renderer/RendererApp"
-import { RendererState } from "../renderer/RendererState"
+import { Task } from "../renderer/RendererState"
+import { Environment } from "../renderer/RendererState"
 import { DeferredPromise } from "../shared/DeferredPromise"
 import { createProxy } from "../shared/proxyHelpers"
 import { Answerer, AnyFunctionMap, Caller } from "../shared/typeHelpers"
@@ -13,10 +14,12 @@ type Rect = { x: number; y: number; width: number; height: number }
 
 type HarnessToRenderer = {
 	measureDOM(cssSelector: string): Rect | undefined
-	getState(): RendererState
+	measureDOMWithText(cssSelector: string, text: string): Rect | undefined
+	getState(): Environment
 }
 
 type RendererToHarness = {
+	runTest(test: Task[]): void
 	dispatchAction(action: RendererAction): void
 }
 

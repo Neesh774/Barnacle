@@ -4,48 +4,39 @@ import {
 	EffectPlugin,
 	StateMachine,
 } from "../StateMachine"
-import { RendererState } from "./RendererState"
+import { Environment, Task } from "./RendererState"
 
-function moveWindow(
-	state: RendererState,
-	action: { x: number; y: number }
-): RendererState {
-	const { rect } = state
-	const { x, y } = action
+function appendTask(state: Environment, task: Task): Environment {
 	return {
-		rect: { ...rect, x, y },
+		tasks: [...state.tasks, task]
 	}
 }
 
-function resizeWindow(
-	state: RendererState,
-	action: { width: number; height: number }
-): RendererState {
-	const { rect } = state
-	const { height, width } = action
+function removeTask(state: Environment, task: Task): Environment {
+	const newTasks = state.tasks.filter(oldTask => oldTask !== task)
 	return {
-		rect: { ...rect, height, width },
+		tasks: newTasks
 	}
 }
 
 const rendererReducers = {
-	moveWindow,
-	resizeWindow,
+	appendTask,
+	removeTask
 }
 
 export type RendererAction = Actions<typeof rendererReducers>
 export type RendererDispatch = Dispatcher<typeof rendererReducers>
 
 export type RendererAppPlugin = EffectPlugin<
-	RendererState,
+	Environment,
 	typeof rendererReducers
 >
 
 export class RendererApp extends StateMachine<
-	RendererState,
+	Environment,
 	typeof rendererReducers
 > {
-	constructor(initialState: RendererState, plugins: RendererAppPlugin[] = []) {
+	constructor(initialState: Environment, plugins: RendererAppPlugin[] = []) {
 		super(initialState, rendererReducers, plugins)
 	}
 }
