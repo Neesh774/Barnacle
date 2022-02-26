@@ -56,9 +56,6 @@ export function App() {
 						Tasks
 					</Title>
 					<div style={{ position: "relative" }}>
-						{state.submitStatus === "submitting" && (
-							<Overlay opacity={0.3} color="#000" />
-						)}
 						<Timeline
 							active={
 								state.submitStatus === "submitting"
