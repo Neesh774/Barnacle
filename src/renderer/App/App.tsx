@@ -1,4 +1,4 @@
-import { Accordion, Button, TextInput, Title } from "@mantine/core"
+import { Accordion, Button, TextInput, Title, ActionIcon } from "@mantine/core"
 import * as React from "react"
 import { BiPlus, BiTrash } from "react-icons/bi"
 import { useEnvironment } from "../Environment"
@@ -105,7 +105,7 @@ export function App() {
 					<Title order={3} style={{ marginBottom: "0.4rem" }}>
 						Tasks
 					</Title>
-					<Accordion disableIconRotation>
+					<Accordion disableIconRotation multiple>
 						{state.test.map((task, i) => {
 							const taskSettings = taskOptions.find((t) => t.name === task.type)
 							return (
@@ -120,6 +120,13 @@ export function App() {
 											}}
 										>
 											{getSemanticName(task)}
+											<ActionIcon
+												color="red"
+												onClick={() => app.dispatch.removeTask(i)}
+												size="md"
+											>
+												<BiTrash size="12" />
+											</ActionIcon>
 										</div>
 									}
 									icon={taskSettings?.icon}

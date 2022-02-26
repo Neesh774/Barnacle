@@ -17,19 +17,11 @@ export function TaskItem({ task, index }: { task: Task; index: number }) {
 		<Container
 			style={{
 				width: "100%",
-				borderRadius: "8px",
 				// margin: "0.5rem 0",
 				padding: "0.5rem 0.6rem",
 				display: "flex",
 				flexDirection: "column",
 			}}
-			sx={(theme) => ({
-				backgroundColor:
-					theme.colors[selectedType?.color ?? "gray"][1] +
-					(state.submitStatus === "running" && index === state.runningTaskIndex
-						? "90"
-						: "60"),
-			})}
 		>
 			{state.submitStatus === "standby" &&
 				state.lastError &&
@@ -52,10 +44,6 @@ export function TaskItem({ task, index }: { task: Task; index: number }) {
 			>
 				<NativeSelect
 					onChange={(e) => {
-						app.dispatch.editTask(
-							{ ...task, type: e.target.value } as any,
-							index
-						)
 						switch (e.target.value) {
 							case "clickOnElement":
 								app.dispatch.editTask(
@@ -81,6 +69,7 @@ export function TaskItem({ task, index }: { task: Task; index: number }) {
 									},
 									index
 								)
+								break
 							case "waitForElement":
 								app.dispatch.editTask(
 									{ type: "waitForElement", selector: "", waitPeriod: 0 },
@@ -102,6 +91,7 @@ export function TaskItem({ task, index }: { task: Task; index: number }) {
 								app.dispatch.editTask({ type: "shortcut", shortcut: "" }, index)
 								break
 						}
+						console.log(e.target.value)
 						setSelectedType(taskOptions.find((t) => t.name === e.target.value))
 					}}
 					value={task.type}
@@ -114,7 +104,7 @@ export function TaskItem({ task, index }: { task: Task; index: number }) {
 			<TaskDetails
 				task={task}
 				index={index}
-				color={selectedType?.color ?? "gray"}
+				color={selectedType?.color ?? "blue"}
 			/>
 		</Container>
 	)
