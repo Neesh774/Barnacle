@@ -31,51 +31,70 @@ function getSemanticName(task: Task): JSX.Element {
 		case "clickOnElement": {
 			return (
 				<Text size="md">
-					Click on element <Code>{task.selector}</Code>
+					Click on element{" "}
+					<Code>{task.selector.length > 0 ? task.selector : ""}</Code>
 				</Text>
 			)
 		}
 		case "clickOnElementWithText": {
 			return (
 				<Text size="md">
-					Click on element <Code>{task.selector}</Code> with text{" "}
-					<Code>{task.text}</Code>
+					Click on element
+					{task.selector.length > 0 ? (
+						<Code>{" " + task.selector + " "}</Code>
+					) : (
+						" "
+					)}
+					with text <Code>{task.text}</Code>
 				</Text>
 			)
 		}
 		case "typeText": {
 			return (
 				<Text size="md">
-					Type <Code>{task.text}</Code>
+					Type<Code> {" " + task.text}</Code>
 				</Text>
 			)
 		}
 		case "shortcut": {
 			return (
 				<Text size="md">
-					Keyboard shortcut <Code>{task.shortcut}</Code>
+					Keyboard shortcut<Code> {" " + task.shortcut}</Code>
 				</Text>
 			)
 		}
 		case "scrollElement": {
 			return (
 				<Text size="md">
-					Scroll element <Code>{task.selector}</Code>
+					Scroll element<Code> {" " + task.selector}</Code>
 				</Text>
 			)
 		}
 		case "waitForElement": {
 			return (
 				<Text size="md">
-					Wait for element <Code>{task.selector}</Code> to appear
+					Wait for element
+					{task.selector.length > 0 ? (
+						<Code>{" " + task.selector + " "}</Code>
+					) : (
+						" "
+					)}
+					to appear
 				</Text>
 			)
 		}
 		case "waitForElementWithText": {
 			return (
 				<Text size="md">
-					Wait for element <Code>{task.selector}</Code> with text{" "}
-					<Code>{task.text}</Code> to appear
+					Wait for element
+					{task.selector.length > 0 ? (
+						<Code>{" " + task.selector + " "}</Code>
+					) : (
+						" "
+					)}
+					with text{" "}
+					{task.text.length > 0 ? <Code>{" " + task.text + " "}</Code> : " "} to
+					appear
 				</Text>
 			)
 		}
@@ -136,15 +155,16 @@ export function App() {
 						Tasks
 					</Title>
 					<Accordion
-						disableIconRotation
 						multiple
 						state={accState}
 						onChange={handlers.setState}
+						iconPosition="right"
 					>
 						{state.test.map((task, i) => {
 							const taskSettings = taskOptions.find((t) => t.name === task.type)
 							return (
 								<Accordion.Item
+									className="task-accordion"
 									key={i}
 									label={
 										<div
@@ -153,10 +173,12 @@ export function App() {
 												alignItems: "center",
 											}}
 										>
+											<div style={{ marginRight: "0.4rem" }}>
+												{taskSettings?.icon}
+											</div>
 											{getSemanticName(task)}
 										</div>
 									}
-									icon={taskSettings?.icon}
 								>
 									<TaskItem index={i} task={task} />
 								</Accordion.Item>
