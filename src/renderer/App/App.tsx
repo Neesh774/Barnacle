@@ -1,5 +1,6 @@
 import {
 	Accordion,
+	ActionIcon,
 	Button,
 	Checkbox,
 	Code,
@@ -76,10 +77,8 @@ function getSemanticName(task: Task): JSX.Element {
 export function App() {
 	const state = useApp((state) => state)
 	const { app } = useEnvironment()
-	const [testSite, setTestSite] = React.useState("")
+
 	const [taskErrors, setTaskErrors] = React.useState(false)
-	const taskRefs = React.useRef<HTMLElement[]>(new Array(state.test.length))
-	const siteInput = React.useRef<HTMLInputElement | null>(null)
 
 	React.useEffect(() => {
 		setTaskErrors(
@@ -117,7 +116,7 @@ export function App() {
 					<Title order={3} style={{ marginBottom: "0.4rem" }}>
 						Tasks
 					</Title>
-					<Accordion disableIconRotation>
+					<Accordion disableIconRotation multiple>
 						{state.test.map((task, i) => {
 							const taskSettings = taskOptions.find((t) => t.name === task.type)
 							return (
@@ -132,6 +131,13 @@ export function App() {
 											}}
 										>
 											{getSemanticName(task)}
+											<ActionIcon
+												color="red"
+												onClick={() => app.dispatch.removeTask(i)}
+												size="md"
+											>
+												<BiTrash size="20" />
+											</ActionIcon>
 										</div>
 									}
 									icon={taskSettings?.icon}
@@ -217,51 +223,72 @@ export function App() {
 					</Accordion.Item>
 				</Accordion>
 			</div>
+			<Browser />
+		</div>
+	)
+}
+
+export function Browser() {
+	const [testSite, setTestSite] = React.useState("")
+	const siteInput = React.useRef<HTMLInputElement | null>(null)
+
+	return (
+		<div
+			className="preview"
+			style={{
+				display: "flex",
+				flex: "1 1 auto",
+				flexDirection: "column",
+			}}
+		>
 			<div
-				className="preview"
+				className="test-site"
 				style={{
 					display: "flex",
-					flexDirection: "column",
-					width: "70%",
-					padding: "2rem 4rem",
+					width: "100%",
+					borderBottom: "1px solid black",
 				}}
 			>
-				<div
-					className="test-site"
-					style={{
-						display: "flex",
-						width: "100%",
-						padding: "0.4rem 0",
-					}}
+				<TextInput
+					ref={siteInput}
+					placeholder="https://example.org"
+					style={{ flex: "1 1 auto" }}
+					type="url"
+					size="xs"
+				/>
+				<Button
+					style={{ marginLeft: "0.2rem" }}
+					onClick={(e: React.MouseEvent) =>
+						setTestSite(siteInput.current ? siteInput.current.value : "")
+					}
+					size="xs"
 				>
-					<TextInput
-						ref={siteInput}
-						style={{ flex: "1 1 auto" }}
-						type="url"
-						size="xs"
-					/>
-					<Button
-						style={{ marginLeft: "0.2rem" }}
-						onClick={(e: React.MouseEvent) =>
-							setTestSite(siteInput.current ? siteInput.current.value : "")
-						}
-						size="xs"
-					>
-						Load
-					</Button>
-				</div>
+					Load
+				</Button>
+			</div>
+			{testSite ? (
 				<iframe
 					id="iframe"
 					style={{
 						display: "flex",
 						width: "100%",
 						height: "100%",
-						border: "1px solid rgb(84,86,88)",
-						borderRadius: "4px",
 					}}
 					src={testSite}
-				></iframe>
-			</div>
+				/>
+			) : (
+				<div
+					style={{
+						backgroundColor: "lightgray",
+						display: "flex",
+						flex: "1 1 auto",
+						alignItems: "center",
+						justifyContent: "center",
+					}}
+				>
+					<Text>Load a website in the url to get started.</Text>
+				</div>
+			)}
 		</div>
 	)
 }

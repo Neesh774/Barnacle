@@ -53,13 +53,29 @@ type TaskOption = {
 }
 
 export const taskOptions = [
-	{ name: "clickOnElement", color: "blue", icon: <BiPointer /> },
-	{ name: "clickOnElementWithText", color: "blue", icon: <BiPointer /> },
-	{ name: "typeText", color: "orange", icon: <BiText /> },
-	{ name: "scrollElement", color: "green", icon: <BiMoveVertical /> },
-	{ name: "waitForElement", color: "yellow", icon: <BiStopwatch /> },
-	{ name: "waitForElementWithText", color: "yellow", icon: <BiStopwatch /> },
-	{ name: "shortcut", color: "blue", icon: <BiKey /> },
+	{ name: "clickOnElement", color: "blue", icon: <BiPointer color="blue" /> },
+	{
+		name: "clickOnElementWithText",
+		color: "blue",
+		icon: <BiPointer color="blue" />,
+	},
+	{ name: "typeText", color: "orange", icon: <BiText color="orange" /> },
+	{
+		name: "scrollElement",
+		color: "green",
+		icon: <BiMoveVertical color="green" />,
+	},
+	{
+		name: "waitForElement",
+		color: "red",
+		icon: <BiStopwatch color="red" />,
+	},
+	{
+		name: "waitForElementWithText",
+		color: "red",
+		icon: <BiStopwatch color="red" />,
+	},
+	{ name: "shortcut", color: "violet", icon: <BiKey color="violet" /> },
 ] as const
 
 type containsAlLTypes = Assert<typeof taskOptions[number]["name"], Task["type"]>
