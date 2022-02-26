@@ -31,7 +31,7 @@ export async function runTest(
 			await renderer.call.endTest({ index, message: e.message as string })
 			return
 		}
-		await sleep(400)
+		await sleep(1000)
 		await renderer.call.incrementTaskIndex()
 	}
 

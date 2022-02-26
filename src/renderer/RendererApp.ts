@@ -24,8 +24,8 @@ function editTask(
 	newTasks[index] = newTask
 	console.log(newTasks)
 	state.submitStatus === "standby" &&
-		state.lastError &&
-		state.lastError.index == index
+	state.lastError &&
+	state.lastError.index == index
 		? (state.lastError = undefined)
 		: ""
 	return {
@@ -51,27 +51,42 @@ function startSubmittingTest(state: RendererState): RendererState {
 	return { ...state, submitStatus: "submitting" }
 }
 
-function finishSubmittingTest(
-	state: RendererState,
-	error?: TaskError
-): RendererState {
-	return { ...state, submitStatus: "standby", lastError: error }
+function cancelSubmittingTest(state: RendererState): RendererState {
+	return { ...state, submitStatus: "standby" }
+}
+
+function startTest(state: RendererState): RendererState {
+	return { ...state, submitStatus: "running", runningTaskIndex: 0 }
 }
 
 function incrementRunningIndex(state: RendererState): RendererState {
-	return state.submitStatus === "running"
-		? { ...state, runningTaskIndex: state.runningTaskIndex + 1 }
-		: state
+	if (state.submitStatus !== "running") {
+		throw new Error(
+			"Test wasn't running when `incrementRunningIndex` was called"
+		)
+	}
+	return { ...state, runningTaskIndex: state.runningTaskIndex + 1 }
+}
+
+function endTest(state: RendererState, error?: TaskError): RendererState {
+	if (state.submitStatus !== "running") {
+		throw new Error("Test wasn't running when `endTest` was called")
+	}
+	return { ...state, submitStatus: "standby", lastError: error }
 }
 
 const rendererReducers = {
 	appendTask,
 	removeTask,
 	editTask,
-	startSubmittingTest,
-	finishSubmittingTest,
-	incrementRunningIndex,
 	clearTasks,
+
+	startSubmittingTest,
+	cancelSubmittingTest,
+
+	startTest,
+	incrementRunningIndex,
+	endTest,
 }
 
 export type RendererAction = Actions<typeof rendererReducers>
@@ -88,6 +103,9 @@ export class RendererApp extends StateMachine<
 > {
 	constructor(initialState: RendererState, plugins: RendererAppPlugin[] = []) {
 		super(initialState, rendererReducers, plugins)
+		this.onDispatch((action) => {
+			console.log("dispatch", action.fn)
+		})
 	}
 }
 
