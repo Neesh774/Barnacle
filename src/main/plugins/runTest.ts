@@ -1,10 +1,12 @@
 import * as nut from "@nut-tree/nut-js"
 import { Task, Test } from "../../renderer/RendererState"
+import { enumerate } from "../../shared/enumerate"
 import { MainToRendererIPC, RendererToMainIPC } from "../../shared/ipc"
 import {
 	Edge,
 	offsetRect,
 	Point,
+	PointDelta,
 	Rect,
 	rectToPoint,
 } from "../../shared/rectHelpers"
@@ -13,7 +15,7 @@ import { MainIPCPeer } from "../MainIPC"
 nut.keyboard.config.autoDelayMs = 100
 nut.mouse.config.autoDelayMs = 100
 nut.mouse.config.mouseSpeed = 1000
-nut.screen.config.highlightDurationMs = 500
+nut.screen.config.autoHighlight = true
 
 export async function runTest(
 	test: Test,
@@ -21,16 +23,18 @@ export async function runTest(
 	windowRect: Rect
 ) {
 	await renderer.call.startTest()
-	test.forEach(async (task, index) => {
+
+	for (const [index, task] of enumerate(test)) {
 		try {
 			await runTask(task, renderer, windowRect)
 		} catch (e) {
-			renderer.call.endTest({ index, message: e.message as string })
+			await renderer.call.endTest({ index, message: e.message as string })
 			return
 		}
 		await sleep(400)
 		await renderer.call.incrementTaskIndex()
-	})
+	}
+
 	await renderer.call.endTest()
 }
 
@@ -40,9 +44,9 @@ export function sleep(ms = 0) {
 
 async function clickPoint(point: Point) {
 	await nut.mouse.move([point])
-	await sleep(50)
+	await sleep(100)
 	await nut.mouse.leftClick()
-	await sleep(50)
+	await sleep(100)
 }
 
 async function clickRect(rect: Rect, edge?: Edge) {
@@ -75,31 +79,13 @@ async function runTask(
 	task: Task,
 	renderer: MainIPCPeer<MainToRendererIPC, RendererToMainIPC>,
 	windowRect: Rect
-) {
+): Promise<boolean> {
 	async function measureElement(cssSelector: string) {
 		const rectOnWindow = await renderer.call.measureDOM(cssSelector)
 		const rectOnScreen = offsetRect(rectOnWindow, {
 			x: windowRect.left,
 			y: windowRect.top,
 		})
-
-		await nut.screen.highlight(
-			new nut.Region(
-				windowRect.left,
-				windowRect.top,
-				windowRect.width,
-				windowRect.height
-			)
-		)
-
-		await nut.screen.highlight(
-			new nut.Region(
-				rectOnScreen.left,
-				rectOnScreen.top,
-				rectOnScreen.width,
-				rectOnScreen.height
-			)
-		)
 
 		return rectOnScreen
 	}
@@ -109,7 +95,6 @@ async function runTask(
 			cssSelector,
 			text
 		)
-
 		const rectOnScreen = offsetRect(rectOnWindow, {
 			x: windowRect.left,
 			y: windowRect.top,
@@ -118,16 +103,31 @@ async function runTask(
 		return rectOnScreen
 	}
 
+	async function scrollElement(selector: string, delta: PointDelta) {
+		await renderer.call.scrollElement(selector, delta)
+	}
+
 	async function type(str: string) {
 		await nut.keyboard.type(str)
 		await sleep(50)
 	}
 
-	async function waitForElement(cssSelector: string) {
+	async function waitForElement(cssSelector: string, waitPeriod = 500) {
 		await waitFor(async () => {
 			await measureElement(cssSelector)
 			return true
-		}, 500)
+		}, waitPeriod)
+	}
+
+	async function waitForElementWithText(
+		cssSelector: string,
+		text: string,
+		waitPeriod = 500
+	) {
+		await waitFor(async () => {
+			await measureElementWithText(cssSelector, text)
+			return true
+		}, waitPeriod)
 	}
 
 	async function clickElement(cssSelector: string, edge?: Edge) {
@@ -149,15 +149,27 @@ async function runTask(
 	switch (task.type) {
 		case "clickOnElement": {
 			await clickElement(task.selector)
-			return
+			return true
 		}
 		case "clickOnElementWithText": {
 			await clickElementWithText(task.selector, task.text)
-			return
+			return true
 		}
 		case "typeText": {
 			await type(task.text)
-			return
+			return true
+		}
+		case "scrollElement": {
+			await scrollElement(task.selector, task.delta)
+			return true
+		}
+		case "waitForElement": {
+			await waitForElement(task.selector, task.waitPeriod)
+			return true
+		}
+		case "waitForElementWithText": {
+			await waitForElementWithText(task.selector, task.text, task.waitPeriod)
+			return true
 		}
 	}
 }
