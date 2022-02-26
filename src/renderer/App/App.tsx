@@ -1,23 +1,69 @@
-import {
-	Button,
-	Overlay,
-	TextInput,
-	Title,
-	Timeline,
-	ActionIcon,
-	Accordion,
-	ThemeIcon,
-} from "@mantine/core"
+import { Accordion, Button, TextInput, Title } from "@mantine/core"
 import * as React from "react"
 import { BiPlus, BiTrash } from "react-icons/bi"
 import { useEnvironment } from "../Environment"
 import { useApp } from "../RendererApp"
+import { Task, taskOptions } from "../RendererState"
 import { TaskItem } from "./TaskItem"
-import { taskOptions } from "../RendererState"
+
+function getSemanticName(task: Task): JSX.Element {
+	switch (task.type) {
+		case "clickOnElement": {
+			return (
+				<span>
+					Click on element <code>{task.selector}</code>
+				</span>
+			)
+		}
+		case "clickOnElementWithText": {
+			return (
+				<span>
+					Click on element <code>{task.selector}</code> with text{" "}
+					<code>{task.text}</code>
+				</span>
+			)
+		}
+		case "typeText": {
+			return (
+				<span>
+					Type <code>{task.text}</code>
+				</span>
+			)
+		}
+		case "shortcut": {
+			return (
+				<span>
+					Keyboard shortcut <code>{task.shortcut}</code>
+				</span>
+			)
+		}
+		case "scrollElement": {
+			return (
+				<span>
+					Scroll element <code>{task.selector}</code>
+				</span>
+			)
+		}
+		case "waitForElement": {
+			return (
+				<span>
+					Wait for element <code>{task.selector}</code> to appear
+				</span>
+			)
+		}
+		case "waitForElementWithText": {
+			return (
+				<span>
+					Wait for element <code>{task.selector}</code> with text{" "}
+					<code>{task.text}</code> to appear
+				</span>
+			)
+		}
+	}
+}
 
 export function App() {
 	const state = useApp((state) => state)
-	console.log({ state })
 	const { app } = useEnvironment()
 	const [testSite, setTestSite] = React.useState("")
 	const [taskErrors, setTaskErrors] = React.useState(false)
@@ -74,10 +120,7 @@ export function App() {
 												justifyContent: "space-between",
 											}}
 										>
-											<Title order={4}>Task {i + 1}</Title>
-											<i style={{ fontSize: "0.8rem", color: "gray" }}>
-												{taskSettings?.name}
-											</i>
+											{getSemanticName(task)}
 										</div>
 									}
 									icon={taskSettings?.icon}

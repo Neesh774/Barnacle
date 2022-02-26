@@ -90,6 +90,42 @@ export function TaskDetails({
 					</Button>
 				</div>
 			)
+		case "shortcut":
+			return (
+				<div style={{ display: "flex", flexDirection: "column" }}>
+					<TextInput
+						required
+						ref={textRef}
+						label="Text"
+						placeholder="cmd-t"
+						onChange={() => {
+							return setSaved(textRef.current?.value === task.shortcut)
+						}}
+						error={textRef.current?.value === ""}
+					/>
+					<Button
+						color={color}
+						style={{
+							marginTop: "0.4rem",
+							transition: "ease-in-out 0.3s",
+						}}
+						variant="light"
+						disabled={saved}
+						onClick={() => {
+							app.dispatch.editTask(
+								{
+									...task,
+									shortcut: textRef.current?.value ?? "",
+								},
+								index
+							)
+							setSaved(true)
+						}}
+					>
+						Save
+					</Button>
+				</div>
+			)
 		case "clickOnElementWithText":
 			return (
 				<div style={{ display: "flex", flexDirection: "column" }}>

@@ -1,17 +1,25 @@
-import { PointDelta } from "../shared/rectHelpers"
-import { Assert } from "../shared/typeHelpers"
-import { BiPointer, BiText, BiMoveVertical, BiStopwatch } from "react-icons/bi"
 import React from "react"
+import {
+	BiKey,
+	BiMoveVertical,
+	BiPointer,
+	BiStopwatch,
+	BiText,
+} from "react-icons/bi"
+import { Edge, PointDelta } from "../shared/rectHelpers"
+import { Assert } from "../shared/typeHelpers"
 
 export type Task =
 	| {
 			type: "clickOnElement"
 			selector: string
+			edge?: Edge
 	  }
 	| {
 			type: "clickOnElementWithText"
 			text: string
 			selector: string
+			edge?: Edge
 	  }
 	| {
 			type: "typeText"
@@ -33,6 +41,10 @@ export type Task =
 			selector: string
 			delta: PointDelta
 	  }
+	| {
+			type: "shortcut"
+			shortcut: string
+	  }
 
 type TaskOption = {
 	name: string
@@ -47,6 +59,7 @@ export const taskOptions = [
 	{ name: "scrollElement", color: "green", icon: <BiMoveVertical /> },
 	{ name: "waitForElement", color: "yellow", icon: <BiStopwatch /> },
 	{ name: "waitForElementWithText", color: "yellow", icon: <BiStopwatch /> },
+	{ name: "shortcut", color: "blue", icon: <BiKey /> },
 ] as const
 
 type containsAlLTypes = Assert<typeof taskOptions[number]["name"], Task["type"]>

@@ -2,6 +2,7 @@ import * as nut from "@nut-tree/nut-js"
 import { Task, Test } from "../../renderer/RendererState"
 import { enumerate } from "../../shared/enumerate"
 import { MainToRendererIPC, RendererToMainIPC } from "../../shared/ipc"
+import { keyInObject } from "../../shared/keys"
 import {
 	Edge,
 	offsetRect,
@@ -47,6 +48,53 @@ async function clickPoint(point: Point) {
 	await sleep(100)
 	await nut.mouse.leftClick()
 	await sleep(100)
+}
+
+const keyboardAliases = {
+	ctrl: nut.Key.LeftControl,
+	control: nut.Key.LeftControl,
+	mod: nut.Key.LeftSuper,
+	meta: nut.Key.LeftSuper,
+	cmd: nut.Key.LeftSuper,
+	enter: nut.Key.Enter,
+	shift: nut.Key.LeftShift,
+	escape: nut.Key.Escape,
+	backspace: nut.Key.Backspace,
+	delete: nut.Key.Backspace,
+	alt: nut.Key.LeftAlt,
+	" ": nut.Key.Space,
+	left: nut.Key.Left,
+	right: nut.Key.Right,
+	down: nut.Key.Down,
+	up: nut.Key.Up,
+}
+
+function getNormalizedKeys(shortcut: string): nut.Key[] {
+	return shortcut
+		.split(/-(?!$)/)
+		.map((str) => str.toLowerCase())
+		.map((char) => {
+			const isAlias = keyInObject(char, keyboardAliases)
+			if (isAlias) return keyboardAliases[char]
+
+			const upperChar = char.toUpperCase()
+			const isKey = keyInObject(upperChar, nut.Key)
+			if (isKey) return nut.Key[upperChar]
+
+			throw new Error("Unknown key: " + char)
+		})
+}
+
+async function shortcut(str: string) {
+	const parts = getNormalizedKeys(str)
+	await nut.keyboard.pressKey(...parts)
+	await nut.keyboard.releaseKey(...parts)
+
+	// Fix a bug where modifier keys are stuck...
+	// https://github.com/nut-tree/nut.js/issues/264
+	// await nut.keyboard.pressKey(nut.Key.LeftSuper)
+	await nut.keyboard.releaseKey(nut.Key.LeftSuper)
+	await sleep(50)
 }
 
 async function clickRect(rect: Rect, edge?: Edge) {
@@ -148,15 +196,19 @@ async function runTask(
 
 	switch (task.type) {
 		case "clickOnElement": {
-			await clickElement(task.selector)
+			await clickElement(task.selector, task.edge)
 			return true
 		}
 		case "clickOnElementWithText": {
-			await clickElementWithText(task.selector, task.text)
+			await clickElementWithText(task.selector, task.text, task.edge)
 			return true
 		}
 		case "typeText": {
 			await type(task.text)
+			return true
+		}
+		case "shortcut": {
+			await shortcut(task.shortcut)
 			return true
 		}
 		case "scrollElement": {
