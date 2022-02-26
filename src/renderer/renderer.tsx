@@ -9,8 +9,6 @@ import * as React from "react"
 import * as ReactDOM from "react-dom"
 import { App } from "./App"
 import { Environment, EnvironmentProvider } from "./Environment"
-import { DisplayWindowRectPlugin } from "./plugins/DisplayWindowRectPlugin"
-import { SyncWindowRectPlugin } from "./plugins/SyncWindowRectPlugin"
 import { RendererApp } from "./RendererApp"
 import { callMain } from "./RendererIPC"
 
@@ -29,9 +27,11 @@ async function setupTestHarness(environment: Environment) {
 	const { connectRendererToTestHarness } = await import("../test/TestHarness")
 	const harness = await connectRendererToTestHarness()
 
-	harness.answer.measureDOM((css) => {
-		const node = document.querySelector(css)
-		if (!node) return
+	harness.answer.measureDOM((selector) => {
+		const node = document.querySelector(selector)
+		if (!node) {
+			throw new Error(`No element found for selector ${selector}`)
+		}
 		const rect = node.getBoundingClientRect()
 		return rect
 	})
@@ -54,10 +54,7 @@ async function setupTestHarness(environment: Environment) {
 async function main() {
 	const { test, rect } = await callMain.load()
 
-	const app = new RendererApp({ tasks: [] }, [
-		SyncWindowRectPlugin,
-		DisplayWindowRectPlugin,
-	])
+	const app = new RendererApp({ tasks: [] }, [])
 
 	const environment: Environment = {
 		app,

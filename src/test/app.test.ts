@@ -1,6 +1,6 @@
 import { strict as assert } from "assert"
 import { describe } from "mocha"
-import { click, drag, shortcut, test as e2eTest } from "./testHelpers"
+import { test as e2eTest } from "./testHelpers"
 
 // The confusing part about this abstraction: inspecting multiple sources of truth.
 describe("App", function () {
@@ -10,50 +10,50 @@ describe("App", function () {
 		assert.equal(harness.renderers.length, 1)
 	})
 
-	e2eTest("Move Window Button", async (harness) => {
-		const window = harness.renderers[0]
-		const posX = window.state.rect.x
-		await click(window, "button")
+	// e2eTest("Move Window Button", async (harness) => {
+	// 	const window = harness.renderers[0]
+	// 	const posX = window.state.rect.x
+	// 	await click(window, "button")
 
-		await window.changedState()
-		assert.notEqual(window.state.rect.x, posX)
-	})
+	// 	await window.changedState()
+	// 	assert.notEqual(window.state.rect.x, posX)
+	// })
 
-	e2eTest("New Window", async (harness) => {
-		await shortcut("Meta-N")
+	// e2eTest("New Window", async (harness) => {
+	// 	await shortcut("Meta-N")
 
-		await Promise.all([harness.main.changedState(), harness.changedState()])
-		assert.equal(harness.main.state.windows.length, 2)
-		assert.equal(harness.renderers.length, 2)
-	})
+	// 	await Promise.all([harness.main.changedState(), harness.changedState()])
+	// 	assert.equal(harness.main.state.windows.length, 2)
+	// 	assert.equal(harness.renderers.length, 2)
+	// })
 
-	e2eTest("Drag Window", async (harness) => {
-		const window = harness.renderers[0]
+	// e2eTest("Drag Window", async (harness) => {
+	// 	const window = harness.renderers[0]
 
-		const { y, x, width } = window.state.rect
-		const start = { x: x + width / 2, y: y + 10 }
-		const end = { x: start.x + 30, y: start.y + 20 }
-		await drag(start, end)
+	// 	const { y, x, width } = window.state.rect
+	// 	const start = { x: x + width / 2, y: y + 10 }
+	// 	const end = { x: start.x + 30, y: start.y + 20 }
+	// 	await drag(start, end)
 
-		await window.changedState()
-		const newRect = window.state.rect
-		assert.equal(newRect.y, y + 20)
-		assert.equal(newRect.x, x + 30)
-	})
+	// 	await window.changedState()
+	// 	const newRect = window.state.rect
+	// 	assert.equal(newRect.y, y + 20)
+	// 	assert.equal(newRect.x, x + 30)
+	// })
 
-	e2eTest("Resize Window", async (harness) => {
-		const window = harness.renderers[0]
+	// e2eTest("Resize Window", async (harness) => {
+	// 	const window = harness.renderers[0]
 
-		const { y, x, width, height } = window.state.rect
-		const start = { x: x + width, y: y + height }
-		const end = { x: start.x - 30, y: start.y - 20 }
-		await drag(start, end)
+	// 	const { y, x, width, height } = window.state.rect
+	// 	const start = { x: x + width, y: y + height }
+	// 	const end = { x: start.x - 30, y: start.y - 20 }
+	// 	await drag(start, end)
 
-		await window.changedState()
-		const newRect = window.state.rect
-		assert.equal(newRect.y, y, "x")
-		assert.equal(newRect.x, x, "y")
-		assert.equal(newRect.height, height - 20, "height")
-		assert.equal(newRect.width, width - 30, "width")
-	})
+	// 	await window.changedState()
+	// 	const newRect = window.state.rect
+	// 	assert.equal(newRect.y, y, "x")
+	// 	assert.equal(newRect.x, x, "y")
+	// 	assert.equal(newRect.height, height - 20, "height")
+	// 	assert.equal(newRect.width, width - 30, "width")
+	// })
 })

@@ -4,19 +4,19 @@ import {
 	EffectPlugin,
 	StateMachine,
 } from "../StateMachine"
-import { Environment, Task } from "./RendererState"
+import { RendererState, Task } from "./RendererState"
 
-function appendTask(state: Environment, task: Task): Environment {
+function appendTask(state: RendererState, task: Task): RendererState {
 	return {
 		tasks: [...state.tasks, task],
 	}
 }
 
 function editTask(
-	state: Environment,
+	state: RendererState,
 	newTask: Task,
 	index: number
-): Environment {
+): RendererState {
 	const newTasks = [...state.tasks]
 	newTasks[index] = newTask
 	return {
@@ -24,7 +24,7 @@ function editTask(
 	}
 }
 
-function removeTask(state: Environment, task: Task): Environment {
+function removeTask(state: RendererState, task: Task): RendererState {
 	const newTasks = state.tasks.filter((oldTask) => oldTask !== task)
 	return {
 		tasks: newTasks,
@@ -41,15 +41,15 @@ export type RendererAction = Actions<typeof rendererReducers>
 export type RendererDispatch = Dispatcher<typeof rendererReducers>
 
 export type RendererAppPlugin = EffectPlugin<
-	Environment,
+	RendererState,
 	typeof rendererReducers
 >
 
 export class RendererApp extends StateMachine<
-	Environment,
+	RendererState,
 	typeof rendererReducers
 > {
-	constructor(initialState: Environment, plugins: RendererAppPlugin[] = []) {
+	constructor(initialState: RendererState, plugins: RendererAppPlugin[] = []) {
 		super(initialState, rendererReducers, plugins)
 	}
 }
