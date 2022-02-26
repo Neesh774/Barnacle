@@ -20,12 +20,16 @@ export async function runTest(
 	windowRect: Rect
 ) {
 	await renderer.call.startTest()
-	for (const task of test) {
-		await runTask(task, renderer, windowRect)
-		console.log("Finished task", { task })
+	test.forEach(async (task, index) => {
+		try {
+			await runTask(task, renderer, windowRect)
+		} catch (e) {
+			renderer.call.endTest({ index, message: e.message as string })
+			return
+		}
 		await sleep(1000)
 		await renderer.call.incrementTaskIndex()
-	}
+	})
 	await renderer.call.endTest()
 }
 
@@ -100,7 +104,17 @@ async function runTask(
 	}
 
 	async function measureElementWithText(cssSelector: string, text: string) {
-		return await renderer.call.measureDOMWithText(cssSelector, text)
+		const rectOnWindow = await renderer.call.measureDOMWithText(
+			cssSelector,
+			text
+		)
+
+		const rectOnScreen = offsetRect(rectOnWindow, {
+			x: windowRect.left,
+			y: windowRect.top,
+		})
+
+		return rectOnScreen
 	}
 
 	async function type(str: string) {
@@ -118,7 +132,7 @@ async function runTask(
 	async function clickElement(cssSelector: string, edge?: Edge) {
 		// await waitForElement(cssSelector)
 		const rect = await measureElement(cssSelector)
-		await clickRect(rect, edge)
+		if (rect) await clickRect(rect, edge)
 	}
 
 	async function clickElementWithText(
@@ -128,7 +142,7 @@ async function runTask(
 	) {
 		// await waitForElement(cssSelector)
 		const rect = await measureElementWithText(cssSelector, text)
-		await clickRect(rect, edge)
+		if (rect) await clickRect(rect, edge)
 	}
 
 	switch (task.type) {

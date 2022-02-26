@@ -2,18 +2,16 @@ import * as React from "react"
 import { useEnvironment } from "../Environment"
 import { Task, taskOptions } from "../RendererState"
 import { TaskDetails } from "./TaskDetails"
-import { NativeSelect, ActionIcon, Container } from "@mantine/core"
-import { BiTrash } from "react-icons/bi"
+import { NativeSelect, ActionIcon, Container, Alert } from "@mantine/core"
+import { BiTrash, BiXCircle } from "react-icons/bi"
+import { useApp } from "../RendererApp"
 
 export function TaskItem({ task, index }: { task: Task; index: number }) {
 	const { app } = useEnvironment()
-	const [selectedTask, setSelectedTask] = React.useState(
+	const state = useApp()
+	const [selectedType, setSelectedType] = React.useState(
 		taskOptions.find((t) => t.name === task.type)
 	)
-
-	React.useEffect(() => {
-		console.log(selectedTask)
-	}, [selectedTask])
 
 	return (
 		<Container
@@ -26,9 +24,26 @@ export function TaskItem({ task, index }: { task: Task; index: number }) {
 				flexDirection: "column",
 			}}
 			sx={(theme) => ({
-				backgroundColor: theme.colors[selectedTask?.color ?? "gray"][1] + "60",
+				backgroundColor:
+					theme.colors[selectedType?.color ?? "gray"][1] +
+					(state.submitStatus === "submitting" &&
+					index === state.runningTaskIndex
+						? "90"
+						: "60"),
 			})}
 		>
+			{state.submitStatus === "notSubmitting" &&
+				state.lastError &&
+				state.lastError.index === index && (
+					<Alert
+						icon={<BiXCircle size={16} />}
+						title={`Error on task ${index + 1}`}
+						style={{ marginBottom: "0.5rem" }}
+						color="red"
+					>
+						{state.lastError.message}
+					</Alert>
+				)}
 			<div
 				style={{
 					display: "flex",
@@ -42,7 +57,7 @@ export function TaskItem({ task, index }: { task: Task; index: number }) {
 							{ ...task, type: e.target.value } as any,
 							index
 						)
-						setSelectedTask(taskOptions.find((t) => t.name === e.target.value))
+						setSelectedType(taskOptions.find((t) => t.name === e.target.value))
 					}}
 					value={task.type}
 					data={taskOptions.map((o) => ({ label: o.name, value: o.name }))}
@@ -56,7 +71,7 @@ export function TaskItem({ task, index }: { task: Task; index: number }) {
 			<TaskDetails
 				task={task}
 				index={index}
-				color={selectedTask?.color ?? "gray"}
+				color={selectedType?.color ?? "gray"}
 			/>
 		</Container>
 	)

@@ -6,7 +6,7 @@ import {
 } from "../StateMachine"
 import { useEnvironment } from "./Environment"
 import { useStateMachine } from "./hooks/useStateMachine"
-import { RendererState, Task } from "./RendererState"
+import { RendererState, Task, TaskError } from "./RendererState"
 
 function appendTask(state: RendererState, task: Task): RendererState {
 	return {
@@ -23,6 +23,7 @@ function editTask(
 	const newTasks = [...state.test]
 	newTasks[index] = newTask
 	console.log(newTasks);
+	state.submitStatus === "notSubmitting" ? state.lastError = null : '';
 	return {
 		...state,
 		test: newTasks,
@@ -42,8 +43,8 @@ function startSubmittingTest(state: RendererState): RendererState {
 	return { ...state, submitStatus: "submitting", runningTaskIndex: 0 }
 }
 
-function finishSubmittingTest(state: RendererState): RendererState {
-	return { ...state, submitStatus: "notSubmitting" }
+function finishSubmittingTest(state: RendererState, error?: TaskError): RendererState {
+	return { ...state, submitStatus: "notSubmitting", lastError: error }
 }
 
 function incrementRunningIndex(state: RendererState): RendererState {

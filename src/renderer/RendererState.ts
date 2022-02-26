@@ -21,9 +21,15 @@ export const taskOptions = [
 
 export type Test = Task[]
 
+export type TaskError = {
+	index: number;
+	message: string;
+}
+
 export type RendererState = {
 	test: Test
 	submitStatus: "notSubmitting"
+	lastError?: TaskError | null
 } | {
 	test: Test
 	submitStatus: "submitting"

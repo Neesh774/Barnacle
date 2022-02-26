@@ -14,6 +14,7 @@ import { Environment, EnvironmentProvider } from "./Environment"
 import { TestHarnessPlugin } from "./plugins/TestHarnessPlugin"
 import { RendererApp } from "./RendererApp"
 import { RendererIPCPeer } from "./RendererIPC"
+import { TaskError } from "./RendererState"
 
 function setupReactApp(environment: Environment) {
 	const root = document.createElement("div")
@@ -123,8 +124,8 @@ function setupMainActions(main: MainHarness, app: RendererApp) {
 		app.dispatch.startSubmittingTest()
 	})
 
-	main.answer.endTest(() => {
-		app.dispatch.finishSubmittingTest()
+	main.answer.endTest((error?: TaskError) => {
+		app.dispatch.finishSubmittingTest(error)
 	})
 }
 
