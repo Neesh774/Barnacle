@@ -10,6 +10,7 @@ import * as ReactDOM from "react-dom"
 import { MainToRendererIPC, RendererToMainIPC } from "../shared/ipc"
 import { App } from "./App/App"
 import { Environment, EnvironmentProvider } from "./Environment"
+import { TestHarnessPlugin } from "./plugins/TestHarnessPlugin"
 import { RendererApp } from "./RendererApp"
 import { RendererIPCPeer } from "./RendererIPC"
 
@@ -52,11 +53,15 @@ async function setupTestHarness(environment: Environment) {
 	return harness
 }
 
+type MainHarness = RendererIPCPeer<RendererToMainIPC, MainToRendererIPC>
+
 function setupMain() {
 	const main = new RendererIPCPeer<RendererToMainIPC, MainToRendererIPC>()
 
 	main.answer.measureDOM((selector) => {
-		const node = document.querySelector(selector)
+		const iframe = window.frames.top[0].document
+		const node = iframe.querySelector(selector)
+		console.log({ node })
 		if (!node) {
 			throw new Error(`No element found for selector ${selector}`)
 		}
@@ -65,9 +70,8 @@ function setupMain() {
 	})
 
 	main.answer.measureDOMWithText((selector, text) => {
-		const elms = Array.from(
-			document.querySelectorAll(selector)
-		) as HTMLElement[]
+		const iframe = document.getElementsByTagName("iframe")[0]
+		const elms = Array.from(iframe.querySelectorAll(selector)) as HTMLElement[]
 		const elm = elms.find((elm) => elm.innerText.includes(text))
 		if (!elm)
 			throw new Error(
@@ -79,9 +83,26 @@ function setupMain() {
 	return main
 }
 
+function setupMainActions(main: MainHarness, app: RendererApp) {
+	main.answer.incrementTaskIndex(() => {
+		app.dispatch.incrementRunningIndex()
+	})
+
+	main.answer.startTest(() => {
+		app.dispatch.startSubmittingTest()
+	})
+
+	main.answer.endTest(() => {
+		app.dispatch.finishSubmittingTest()
+	})
+}
+
 async function main() {
 	const main = setupMain()
-	const app = new RendererApp({ test: [], submitStatus: "notSubmitting" }, [])
+	const app = new RendererApp({ test: [], submitStatus: "notSubmitting" }, [
+		TestHarnessPlugin(main),
+	])
+	setupMainActions(main, app)
 
 	const environment: Environment = {
 		app,

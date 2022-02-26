@@ -38,15 +38,26 @@ function removeTask(state: RendererState, index: number): RendererState {
 	}
 }
 
-function submitTest(state: RendererState): RendererState {
-	return { ...state, submitStatus: "submitting" }
+function startSubmittingTest(state: RendererState): RendererState {
+	return { ...state, submitStatus: "submitting", runningTaskIndex: 0 }
 }
+
+function finishSubmittingTest(state: RendererState): RendererState {
+	return { ...state, submitStatus: "notSubmitting" }
+}
+
+function incrementRunningIndex(state: RendererState): RendererState {
+	return state.submitStatus === "submitting" ? { ...state, runningTaskIndex: state.runningTaskIndex + 1 } : state
+}
+
 
 const rendererReducers = {
 	appendTask,
 	removeTask,
 	editTask,
-	submitTest,
+	startSubmittingTest,
+	finishSubmittingTest,
+	incrementRunningIndex
 }
 
 export type RendererAction = Actions<typeof rendererReducers>

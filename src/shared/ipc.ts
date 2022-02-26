@@ -12,4 +12,8 @@ export type RendererToMainIPC = {
 export type MainToRendererIPC = {
 	measureDOM(cssSelector: string): Rect
 	measureDOMWithText(cssSelector: string, text: string): Rect
+
+	startTest(): void
+	incrementTaskIndex(): void
+	endTest(): void
 }

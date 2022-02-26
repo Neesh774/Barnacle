@@ -1,7 +1,7 @@
 {
-	"name": "electron-quick-start-typescript",
+	"name": "barnacle",
 	"version": "1.0.0",
-	"description": "A minimal Electron application written with Typescript",
+	"description": "A end-to-end testing service.",
 	"scripts": {
 		"build": "tsc",
 		"watch": "tsc -w",
@@ -9,7 +9,7 @@
 		"lint": "eslint -c .eslintrc --ext .ts ./src",
 		"start": "electron ./build/main/main.js --disable-gpu"
 	},
-	"repository": "https://github.com/electron/electron-quick-start-typescript",
+	"repository": "https://github.com/Neesh774/Barnacle",
 	"keywords": [
 		"Electron",
 		"quick",
@@ -34,8 +34,10 @@
 		"typescript": "^4.3.5"
 	},
 	"dependencies": {
+		"@mantine/core": "^3.6.11",
 		"lodash": "^4.17.21",
 		"react": "^17.0.2",
-		"react-dom": "^17.0.2"
+		"react-dom": "^17.0.2",
+		"react-icons": "^4.3.1"
 	}
 }

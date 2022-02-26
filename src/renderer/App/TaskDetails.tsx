@@ -2,18 +2,42 @@ import * as React from "react"
 import { useEnvironment } from "../Environment"
 import { useApp } from "../RendererApp"
 import { Task } from "../RendererState"
+import { TextInput, Button } from "@mantine/core"
 
-export function TaskDetails({ task, index }: { task: Task; index: number }) {
+export function TaskDetails({
+	task,
+	index,
+	color,
+}: {
+	task: Task
+	index: number
+	color: string
+}) {
 	const { app } = useEnvironment()
 	const selectorRef = React.useRef<HTMLInputElement>(null)
 	const textRef = React.useRef<HTMLInputElement>(null)
+	const [saved, setSaved] = React.useState(true)
+
 	switch (task.type) {
 		case "clickOnElement":
 			return (
 				<div style={{ display: "flex", flexDirection: "column" }}>
-					<input ref={selectorRef} placeholder="Selector" />
-                    <button
-						onClick={() =>
+					<TextInput
+						required
+						label="Selector"
+						ref={selectorRef}
+						placeholder=".submit"
+						error={selectorRef.current?.value === ""}
+						onChange={() =>
+							setSaved(selectorRef.current?.value == task.selector)
+						}
+					/>
+					<Button
+						color={color}
+						style={{ marginTop: "0.4rem", transition: "ease-in-out 0.3s" }}
+						variant="light"
+						disabled={saved}
+						onClick={() => {
 							app.dispatch.editTask(
 								{
 									...task,
@@ -21,18 +45,34 @@ export function TaskDetails({ task, index }: { task: Task; index: number }) {
 								},
 								index
 							)
-						}
+							setSaved(true)
+						}}
 					>
 						Save
-					</button>
+					</Button>
 				</div>
 			)
 		case "typeText":
 			return (
 				<div style={{ display: "flex", flexDirection: "column" }}>
-					<input ref={textRef} placeholder="Text" />
-					<button
-						onClick={() =>
+					<TextInput
+						required
+						ref={textRef}
+						label="Text"
+						placeholder="Lorem ipsum"
+						onChange={() => setSaved(textRef.current?.value == task.text)}
+						error={textRef.current?.value === ""}
+					/>
+					<Button
+						color={color}
+						style={{
+							width: "30%",
+							marginTop: "0.4rem",
+							transition: "ease-in-out 0.3s",
+						}}
+						variant="light"
+						disabled={saved}
+						onClick={() => {
 							app.dispatch.editTask(
 								{
 									...task,
@@ -40,19 +80,44 @@ export function TaskDetails({ task, index }: { task: Task; index: number }) {
 								},
 								index
 							)
-						}
+							setSaved(true)
+						}}
 					>
 						Save
-					</button>
+					</Button>
 				</div>
 			)
 		case "clickOnElementWithText":
 			return (
 				<div style={{ display: "flex", flexDirection: "column" }}>
-					<input ref={selectorRef} placeholder="Selector" />
-					<input ref={textRef} placeholder="Text" />
-					<button
-						onClick={() =>
+					<TextInput
+						required
+						ref={selectorRef}
+						label="Selector"
+						placeholder=".submit"
+						onChange={() =>
+							setSaved(selectorRef.current?.value == task.selector)
+						}
+						error={selectorRef.current?.value === ""}
+					/>
+					<TextInput
+						required
+						ref={textRef}
+						label="Text"
+						placeholder="Lorem ipsum"
+						onChange={() => setSaved(textRef.current?.value == task.text)}
+						error={textRef.current?.value === ""}
+					/>
+					<Button
+						color={color}
+						style={{
+							width: "30%",
+							marginTop: "0.4rem",
+							transition: "ease-in-out 0.3s",
+						}}
+						variant="light"
+						disabled={saved}
+						onClick={() => {
 							app.dispatch.editTask(
 								{
 									...task,
@@ -61,10 +126,11 @@ export function TaskDetails({ task, index }: { task: Task; index: number }) {
 								},
 								index
 							)
-						}
+							setSaved(true)
+						}}
 					>
 						Save
-					</button>
+					</Button>
 				</div>
 			)
 		default:

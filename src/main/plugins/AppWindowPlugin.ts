@@ -18,9 +18,9 @@ import { runTest } from "./runTest"
 
 export const AppWindowPlugin =
 	(environment: Omit<MainEnvironment, "app">): MainAppPlugin =>
-	(app) => {
-		return new AppWindowController({ ...environment, app })
-	}
+		(app) => {
+			return new AppWindowController({ ...environment, app })
+		}
 
 class AppWindow {
 	private browserWindow: BrowserWindow
@@ -88,7 +88,9 @@ class AppWindow {
 			this.browserWindow
 		)
 
-		this.ipc.answer.runTest((test) => runTest)
+		this.ipc.answer.runTest(async (test) => {
+			runTest(test, this.ipc)
+		})
 	}
 
 	updateState(nextState: WindowState) {

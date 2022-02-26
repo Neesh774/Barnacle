@@ -12,10 +12,13 @@ export async function runTest(
 	test: Test,
 	renderer: MainIPCPeer<MainToRendererIPC, RendererToMainIPC>
 ) {
+	await renderer.call.startTest()
 	for (const task of test) {
 		await runTask(task, renderer)
-		await sleep(100)
+		await sleep(1000)
+		await renderer.call.incrementTaskIndex()
 	}
+	await renderer.call.endTest()
 }
 
 export function sleep(ms = 0) {
@@ -106,6 +109,7 @@ async function runTask(
 		}
 		case "typeText": {
 			await type(task.text)
+			return
 		}
 	}
 }
