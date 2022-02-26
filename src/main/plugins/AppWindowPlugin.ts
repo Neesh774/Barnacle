@@ -18,9 +18,9 @@ import { runTest } from "./runTest"
 
 export const AppWindowPlugin =
 	(environment: Omit<MainEnvironment, "app">): MainAppPlugin =>
-		(app) => {
-			return new AppWindowController({ ...environment, app })
-		}
+	(app) => {
+		return new AppWindowController({ ...environment, app })
+	}
 
 class AppWindow {
 	private browserWindow: BrowserWindow
@@ -66,7 +66,7 @@ class AppWindow {
 			if (process.platform !== "darwin") return
 			const [x, y] = this.browserWindow.getPosition()
 			const { rect } = this.windowState
-			if (rect.x === x && rect.y === y) return
+			if (rect.left === x && rect.top === y) return
 			environment.app.dispatch.moveWindow(id, { x, y })
 		})
 
@@ -89,7 +89,8 @@ class AppWindow {
 		)
 
 		this.ipc.answer.runTest(async (test) => {
-			runTest(test, this.ipc)
+			const { x, y, height, width } = this.browserWindow.getContentBounds()
+			runTest(test, this.ipc, { top: y, left: x, height, width })
 		})
 	}
 
@@ -110,8 +111,8 @@ class AppWindow {
 		const prevRect = prevState.rect
 		const nextRect = nextState.rect
 
-		if (prevRect.x !== nextRect.x || prevRect.y !== nextRect.y) {
-			this.browserWindow.setPosition(nextRect.x, nextRect.y, false)
+		if (prevRect.left !== nextRect.left || prevRect.top !== nextRect.top) {
+			this.browserWindow.setPosition(nextRect.left, nextRect.top, false)
 		}
 
 		if (

@@ -13,6 +13,17 @@ export function expandRect(rect: Rect, margin: number): Rect {
 	}
 }
 
+export function offsetRect(rect: Rect, delta: PointDelta) {
+	let { top, left, width, height } = rect
+	if (delta.x) {
+		left += delta.x
+	}
+	if (delta.y) {
+		top += delta.y
+	}
+	return { top, left, width, height }
+}
+
 export function rectsOverlap(a: Rect, b: Rect) {
 	if (b.left > a.left + a.width) return false
 	if (b.left + b.width < a.left) return false

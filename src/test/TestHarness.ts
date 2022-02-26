@@ -1,7 +1,6 @@
 import * as net from "net"
 import { deserializeError, serializeError } from "serialize-error"
 import { MainAction, MainApp } from "../main/MainApp"
-import { runTest } from "../main/plugins/runTest"
 import { RendererAction, RendererApp } from "../renderer/RendererApp"
 import { RendererState, Task } from "../renderer/RendererState"
 import { DeferredPromise } from "../shared/DeferredPromise"
@@ -100,7 +99,7 @@ export class TestHarnessAPI<
 > {
 	constructor(private socket: HarnessSocket) {}
 
-	call = createProxy<Caller<C>>((fn: string, ...args) => {
+	call = createProxy<Caller<C>>((fn: any, ...args) => {
 		const deferred = new DeferredPromise<any>()
 		const id = randomId()
 
@@ -361,7 +360,7 @@ export class TestHarness extends StateMachine<
 
 		const renderer = harness.renderers[0]
 
-		renderer.answer.runTest((test) => runTest(test, renderer))
+		// renderer.answer.runTest((test) => runTest(test, renderer))
 
 		return harness
 	}

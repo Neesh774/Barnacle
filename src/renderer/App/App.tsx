@@ -1,9 +1,9 @@
+import { Button, Overlay, Progress, TextInput, Title } from "@mantine/core"
 import * as React from "react"
-import { useApp } from "../RendererApp"
-import { useEnvironment } from "../Environment"
-import { TaskItem } from "./Task"
-import { Button, Title, TextInput, Progress, Overlay } from "@mantine/core"
 import { BiPlus, BiTrash } from "react-icons/bi"
+import { useEnvironment } from "../Environment"
+import { useApp } from "../RendererApp"
+import { TaskItem } from "./Task"
 
 export function App() {
 	const state = useApp()
@@ -146,7 +146,13 @@ export function App() {
 					</Button>
 				</div>
 				<iframe
-					style={{ display: "flex", width: "100%", height: "100%" }}
+					id="iframe"
+					style={{
+						display: "flex",
+						width: "100%",
+						height: "100%",
+						border: "1px solid black",
+					}}
 					src={testSite}
 				></iframe>
 			</div>

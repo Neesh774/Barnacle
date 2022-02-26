@@ -57,7 +57,7 @@ function moveWindow(
 			if (win.id !== id) return win
 			return {
 				...win,
-				rect: { ...win.rect, x, y },
+				rect: { ...win.rect, left: x, top: y },
 			}
 		}),
 	}
@@ -68,7 +68,6 @@ function resizeWindow(
 	id: string,
 	size: { width: number; height: number }
 ): MainState {
-	console.log("resizing")
 	const { windows } = state
 	const { width, height } = size
 	return {
@@ -99,8 +98,8 @@ function focusWindow(state: MainState, windowId: string): MainState {
 
 function getOffsetRect(rect: WindowRect): WindowRect {
 	return {
-		x: rect.x + 20,
-		y: rect.y + 20,
+		left: rect.left + 20,
+		top: rect.top + 20,
 		width: rect.width,
 		height: rect.height,
 	}
