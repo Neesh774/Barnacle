@@ -1,10 +1,12 @@
 import {
-	ActionIcon,
 	Button,
+	Overlay,
 	TextInput,
-	Timeline,
 	Title,
+	Timeline,
+	ActionIcon,
 	Accordion,
+	ThemeIcon,
 } from "@mantine/core"
 import * as React from "react"
 import { BiPlus, BiTrash } from "react-icons/bi"
@@ -15,6 +17,7 @@ import { taskOptions } from "../RendererState"
 
 export function App() {
 	const state = useApp((state) => state)
+	console.log({ state })
 	const { app } = useEnvironment()
 	const [testSite, setTestSite] = React.useState("")
 	const [taskErrors, setTaskErrors] = React.useState(false)
@@ -58,7 +61,29 @@ export function App() {
 					</Title>
 					<Accordion disableIconRotation>
 						{state.test.map((task, i) => {
-							return <TaskItem index={i} task={task} key={i} />
+							const taskSettings = taskOptions.find((t) => t.name === task.type)
+							return (
+								<Accordion.Item
+									key={i}
+									label={
+										<div
+											style={{
+												display: "flex",
+												alignItems: "center",
+												justifyContent: "space-between",
+											}}
+										>
+											<Title order={4}>Task {i + 1}</Title>
+											<i style={{ fontSize: "0.8rem", color: "gray" }}>
+												{taskSettings?.name}
+											</i>
+										</div>
+									}
+									icon={taskSettings?.icon}
+								>
+									<TaskItem index={i} task={task} />
+								</Accordion.Item>
+							)
 						})}
 					</Accordion>
 					<Button
@@ -68,6 +93,7 @@ export function App() {
 						variant="outline"
 						size="xs"
 						leftIcon={<BiPlus />}
+						style={{ marginTop: "1rem" }}
 					>
 						New Task
 					</Button>
