@@ -66,6 +66,11 @@ type containsAlLTypes = Assert<typeof taskOptions[number]["name"], Task["type"]>
 
 export type Test = Task[]
 
+export type TestOptions = {
+	delay: number
+	highlightBeforeClick: boolean
+}
+
 export type TaskError = {
 	index: number
 	message: string
@@ -75,14 +80,17 @@ export type RendererState =
 	| {
 			test: Test
 			submitStatus: "standby"
+			options: TestOptions
 			lastError?: TaskError
 	  }
 	| {
 			test: Test
+			options: TestOptions
 			submitStatus: "submitting"
 	  }
 	| {
 			test: Test
+			options: TestOptions
 			submitStatus: "running"
 			runningTaskIndex: number
 	  }

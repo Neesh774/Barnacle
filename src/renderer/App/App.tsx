@@ -1,4 +1,15 @@
-import { Accordion, Button, TextInput, Title } from "@mantine/core"
+import {
+	Accordion,
+	Button,
+	Checkbox,
+	Code,
+	Divider,
+	Group,
+	NumberInput,
+	Text,
+	TextInput,
+	Title,
+} from "@mantine/core"
 import * as React from "react"
 import { BiPlus, BiTrash } from "react-icons/bi"
 import { useEnvironment } from "../Environment"
@@ -10,53 +21,53 @@ function getSemanticName(task: Task): JSX.Element {
 	switch (task.type) {
 		case "clickOnElement": {
 			return (
-				<span>
-					Click on element <code>{task.selector}</code>
-				</span>
+				<Text size="md">
+					Click on element <Code>{task.selector}</Code>
+				</Text>
 			)
 		}
 		case "clickOnElementWithText": {
 			return (
-				<span>
-					Click on element <code>{task.selector}</code> with text{" "}
-					<code>{task.text}</code>
-				</span>
+				<Text size="md">
+					Click on element <Code>{task.selector}</Code> with text{" "}
+					<Code>{task.text}</Code>
+				</Text>
 			)
 		}
 		case "typeText": {
 			return (
-				<span>
-					Type <code>{task.text}</code>
-				</span>
+				<Text size="md">
+					Type <Code>{task.text}</Code>
+				</Text>
 			)
 		}
 		case "shortcut": {
 			return (
-				<span>
-					Keyboard shortcut <code>{task.shortcut}</code>
-				</span>
+				<Text size="md">
+					Keyboard shortcut <Code>{task.shortcut}</Code>
+				</Text>
 			)
 		}
 		case "scrollElement": {
 			return (
-				<span>
-					Scroll element <code>{task.selector}</code>
-				</span>
+				<Text size="md">
+					Scroll element <Code>{task.selector}</Code>
+				</Text>
 			)
 		}
 		case "waitForElement": {
 			return (
-				<span>
-					Wait for element <code>{task.selector}</code> to appear
-				</span>
+				<Text size="md">
+					Wait for element <Code>{task.selector}</Code> to appear
+				</Text>
 			)
 		}
 		case "waitForElementWithText": {
 			return (
-				<span>
-					Wait for element <code>{task.selector}</code> with text{" "}
-					<code>{task.text}</code> to appear
-				</span>
+				<Text size="md">
+					Wait for element <Code>{task.selector}</Code> with text{" "}
+					<Code>{task.text}</Code> to appear
+				</Text>
 			)
 		}
 	}
@@ -142,13 +153,12 @@ export function App() {
 						New Task
 					</Button>
 				</div>
+				<Divider />
 				<div
 					style={{
 						padding: "0.6rem 1rem",
-						boxShadow: " 0px -2px 4px -2.5px rgba(0,0,0,0.75)",
 						width: "100%",
 						display: "flex",
-						justifyContent: "space-between",
 						alignItems: "center",
 					}}
 				>
@@ -163,6 +173,7 @@ export function App() {
 					>
 						Submit
 					</Button>
+					<div style={{ flex: "1 1 auto" }} />
 					<Button
 						onClick={() => {
 							app.dispatch.clearTasks()
@@ -177,6 +188,34 @@ export function App() {
 						Clear
 					</Button>
 				</div>
+				<Accordion>
+					<Accordion.Item label="Options">
+						<Group spacing={15} direction={"column"}>
+							<NumberInput
+								label="Task delay"
+								description="Delay between each task item"
+								value={state.options.delay}
+								onChange={(value) => {
+									app.dispatch.setOptions({
+										...state.options,
+										delay: value || 0,
+									})
+								}}
+							/>
+							<Checkbox
+								label="Highlight before click"
+								checked={state.options.highlightBeforeClick}
+								onChange={(event) => {
+									const checked = event.currentTarget.checked
+									app.dispatch.setOptions({
+										...state.options,
+										highlightBeforeClick: checked,
+									})
+								}}
+							/>
+						</Group>
+					</Accordion.Item>
+				</Accordion>
 			</div>
 			<div
 				className="preview"

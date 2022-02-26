@@ -1,5 +1,5 @@
 import * as nut from "@nut-tree/nut-js"
-import { Task, Test } from "../../renderer/RendererState"
+import { Task, Test, TestOptions } from "../../renderer/RendererState"
 import { enumerate } from "../../shared/enumerate"
 import { MainToRendererIPC, RendererToMainIPC } from "../../shared/ipc"
 import { keyInObject } from "../../shared/keys"
@@ -21,18 +21,19 @@ nut.screen.config.autoHighlight = true
 export async function runTest(
 	test: Test,
 	renderer: MainIPCPeer<MainToRendererIPC, RendererToMainIPC>,
-	windowRect: Rect
+	windowRect: Rect,
+	options: TestOptions
 ) {
 	await renderer.call.startTest()
 
 	for (const [index, task] of enumerate(test)) {
 		try {
-			await runTask(task, renderer, windowRect)
+			await runTask(task, renderer, windowRect, options)
 		} catch (e) {
 			await renderer.call.endTest({ index, message: e.message as string })
 			return
 		}
-		await sleep(1000)
+		await sleep(options.delay)
 		await renderer.call.incrementTaskIndex()
 	}
 
@@ -126,7 +127,8 @@ async function waitFor<T>(
 async function runTask(
 	task: Task,
 	renderer: MainIPCPeer<MainToRendererIPC, RendererToMainIPC>,
-	windowRect: Rect
+	windowRect: Rect,
+	options: TestOptions
 ): Promise<boolean> {
 	async function measureElement(cssSelector: string) {
 		const rectOnWindow = await renderer.call.measureDOM(cssSelector)
@@ -155,6 +157,12 @@ async function runTask(
 		await renderer.call.scrollElement(selector, delta)
 	}
 
+	async function highlight(rect: Rect) {
+		await nut.screen.highlight(
+			new nut.Region(rect.left, rect.top, rect.width, rect.height)
+		)
+	}
+
 	async function type(str: string) {
 		await nut.keyboard.type(str)
 		await sleep(50)
@@ -181,7 +189,10 @@ async function runTask(
 	async function clickElement(cssSelector: string, edge?: Edge) {
 		// await waitForElement(cssSelector)
 		const rect = await measureElement(cssSelector)
-		if (rect) await clickRect(rect, edge)
+		if (rect) {
+			if (options.highlightBeforeClick) await highlight(rect)
+			await clickRect(rect, edge)
+		}
 	}
 
 	async function clickElementWithText(
@@ -191,7 +202,10 @@ async function runTask(
 	) {
 		// await waitForElement(cssSelector)
 		const rect = await measureElementWithText(cssSelector, text)
-		if (rect) await clickRect(rect, edge)
+		if (rect) {
+			if (options.highlightBeforeClick) await highlight(rect)
+			await clickRect(rect, edge)
+		}
 	}
 
 	switch (task.type) {
