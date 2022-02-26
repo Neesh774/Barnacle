@@ -7,10 +7,11 @@
 
 import * as React from "react"
 import * as ReactDOM from "react-dom"
+import { MainToRendererIPC, RendererToMainIPC } from "../shared/ipc"
 import { App } from "./App"
 import { Environment, EnvironmentProvider } from "./Environment"
 import { RendererApp } from "./RendererApp"
-import { callMain } from "./RendererIPC"
+import { RendererIPCPeer } from "./RendererIPC"
 
 function setupReactApp(environment: Environment) {
 	const root = document.createElement("div")
@@ -52,16 +53,13 @@ async function setupTestHarness(environment: Environment) {
 }
 
 async function main() {
-	const { test, rect } = await callMain.load()
-
+	const main = new RendererIPCPeer<RendererToMainIPC, MainToRendererIPC>()
 	const app = new RendererApp({ test: [], submitStatus: "notSubmitting" }, [])
 
 	const environment: Environment = {
 		app,
-		harness: undefined,
+		main,
 	}
-
-	environment.harness = await setupTestHarness(environment)
 
 	setupReactApp(environment)
 }

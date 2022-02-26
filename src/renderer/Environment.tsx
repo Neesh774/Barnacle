@@ -1,11 +1,12 @@
 import * as React from "react"
 import { createContext, useContext } from "react"
-import { RendererHarnessClient } from "../../src/test/TestHarness"
+import { MainToRendererIPC, RendererToMainIPC } from "../shared/ipc"
 import { RendererApp } from "./RendererApp"
+import { RendererIPCPeer } from "./RendererIPC"
 
 export type Environment = {
 	app: RendererApp
-	harness: RendererHarnessClient | undefined
+	main: RendererIPCPeer<RendererToMainIPC, MainToRendererIPC>
 }
 
 const EnvironmentContext = createContext<Environment | undefined>(undefined)

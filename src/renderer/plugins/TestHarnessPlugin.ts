@@ -10,7 +10,7 @@ export const TestHarnessPlugin =
 		async function submitTest(test: Test) {
 			if (submittedTests.has(test)) return
 			submittedTests.add(test)
-			await environment.harness?.call.runTest(test)
+			await environment.main.call.runTest(test)
 			submittedTests.delete(test)
 		}
 

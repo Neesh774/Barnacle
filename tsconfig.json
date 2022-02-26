@@ -19,7 +19,7 @@
 		"resolveJsonModule": true,
 		"outDir": "build",
 		"rootDir": "src",
-		"noImplicitAny": true,
+		"noImplicitAny": false,
 		"skipLibCheck": true,
 		"lib": ["es2019", "esnext.asynciterable", "dom"]
 	},
