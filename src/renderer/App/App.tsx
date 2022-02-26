@@ -3,7 +3,7 @@ import { useApp } from "../RendererApp"
 import { useEnvironment } from "../Environment"
 import { TaskItem } from "./Task"
 import { Button, Title, TextInput, Progress, Overlay } from "@mantine/core"
-import { BiPlus } from "react-icons/bi"
+import { BiPlus, BiTrash } from "react-icons/bi"
 
 export function App() {
 	const state = useApp()
@@ -76,9 +76,12 @@ export function App() {
 				</div>
 				<div
 					style={{
-						padding: "0.4rem 1rem",
-						boxShadow: "0px -1px 3px 0px rgba(0,0,0,0.75)",
+						padding: "0.6rem 1rem",
+						boxShadow: " 0px -2px 4px -2.5px rgba(0,0,0,0.75)",
 						width: "100%",
+						display: "flex",
+						justifyContent: "space-between",
+						alignItems: "center",
 					}}
 				>
 					<Button
@@ -87,11 +90,24 @@ export function App() {
 						}}
 						variant="gradient"
 						gradient={{ from: "indigo", to: "cyan" }}
-						style={{ margin: "0.2rem 0" }}
 						disabled={taskErrors}
+						style={{ transition: "ease-in-out 0.2s" }}
 						loading={state.submitStatus === "submitting"}
 					>
 						Submit
+					</Button>
+					<Button
+						onClick={() => {
+							app.dispatch.clearTasks()
+						}}
+						style={{ display: "flex", transition: "ease-in-out 0.2s" }}
+						leftIcon={<BiTrash size={16} />}
+						variant="outline"
+						color="gray"
+						disabled={state.test.length === 0}
+						size="xs"
+					>
+						Clear
 					</Button>
 				</div>
 			</div>

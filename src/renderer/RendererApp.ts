@@ -30,6 +30,10 @@ function editTask(
 	}
 }
 
+function clearTasks(state): RendererState {
+	return { ...state, test: [] }
+}
+
 function removeTask(state: RendererState, index: number): RendererState {
 	const newTasks = state.test.filter((_, i) => i !== index)
 	console.log(newTasks, index);
@@ -58,7 +62,8 @@ const rendererReducers = {
 	editTask,
 	startSubmittingTest,
 	finishSubmittingTest,
-	incrementRunningIndex
+	incrementRunningIndex,
+	clearTasks
 }
 
 export type RendererAction = Actions<typeof rendererReducers>
