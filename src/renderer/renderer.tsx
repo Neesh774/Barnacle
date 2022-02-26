@@ -70,7 +70,7 @@ function setupMain() {
 
 		const node = iframe.querySelector(selector)
 		if (!node) {
-			throw new Error(`No element found for selector ${selector}`)
+			throw new Error(`No element found for selector "${selector}"`)
 		}
 		const { top, left, width, height } = node.getBoundingClientRect()
 
@@ -96,7 +96,7 @@ function setupMain() {
 		const node = nodes.find((elm) => elm.innerText.includes(text))
 		if (!node)
 			throw new Error(
-				`No element found for selector ${selector} containing text ${text}`
+				`No element found for selector "${selector}" containing text "${text}"`
 			)
 		const { top, left, width, height } = node.getBoundingClientRect()
 
