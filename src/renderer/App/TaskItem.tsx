@@ -8,8 +8,9 @@ import {
 	Container,
 	Alert,
 	Title,
+	Timeline,
 } from "@mantine/core"
-import { BiTrash, BiXCircle } from "react-icons/bi"
+import { BiTrash, BiXCircle, BiText, BiMouseAlt } from "react-icons/bi"
 import { useApp } from "../RendererApp"
 
 export function TaskItem({ task, index }: { task: Task; index: number }) {
@@ -58,38 +59,41 @@ export function TaskItem({ task, index }: { task: Task; index: number }) {
 					alignItems: "center",
 				}}
 			>
-				<Title order={5}>Task {index + 1}</Title>
+				<NativeSelect
+					onChange={(e) => {
+						app.dispatch.editTask(
+							{ ...task, type: e.target.value } as any,
+							index
+						)
+						switch (e.target.value) {
+							case "clickOnElement":
+								app.dispatch.editTask(
+									{ type: "clickOnElement", selector: "" },
+									index
+								)
+								break
+							case "typeText":
+								app.dispatch.editTask({ type: "typeText", text: "" }, index)
+								break
+							case "clickOnElementWithText":
+								app.dispatch.editTask(
+									{ type: "clickOnElementWithText", text: "", selector: "" },
+									index
+								)
+								break
+						}
+						setSelectedType(taskOptions.find((t) => t.name === e.target.value))
+					}}
+					value={task.type}
+					data={taskOptions.map((o) => ({ label: o.name, value: o.name }))}
+					placeholder="Pick a task"
+					label="Task Type"
+				/>
 				<ActionIcon color="red" onClick={() => app.dispatch.removeTask(index)}>
 					<BiTrash style={{ width: 16, height: 16 }} />
 				</ActionIcon>
 			</div>
-			<NativeSelect
-				onChange={(e) => {
-					app.dispatch.editTask({ ...task, type: e.target.value } as any, index)
-					switch (e.target.value) {
-						case "clickOnElement":
-							app.dispatch.editTask(
-								{ type: "clickOnElement", selector: "" },
-								index
-							)
-							break
-						case "typeText":
-							app.dispatch.editTask({ type: "typeText", text: "" }, index)
-							break
-						case "clickOnElementWithText":
-							app.dispatch.editTask(
-								{ type: "clickOnElementWithText", text: "", selector: "" },
-								index
-							)
-							break
-					}
-					setSelectedType(taskOptions.find((t) => t.name === e.target.value))
-				}}
-				value={task.type}
-				data={taskOptions.map((o) => ({ label: o.name, value: o.name }))}
-				placeholder="Pick a task"
-				label="Task Type"
-			/>
+
 			<TaskDetails
 				task={task}
 				index={index}

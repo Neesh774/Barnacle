@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+
+<html>
+	<body>
+		<input class="testInput" />
+		<button class="button">Test banana</button>
+		<span>Clicks: 0</span>
+		<script>
+			//increment button
+			var button = document.querySelector(".button")
+			var clicks = 0
+			button.addEventListener("click", function () {
+				clicks++
+				document.querySelector("span").innerHTML = "Clicks: " + clicks
+			})
+		</script>
+	</body>
+</html>

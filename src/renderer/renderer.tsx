@@ -70,7 +70,7 @@ function setupMain() {
 
 		const node = iframe.querySelector(selector)
 		if (!node) {
-			throw new Error(`No element found for selector ${selector}`)
+			throw new Error(`No element found for selector "${selector}"`)
 		}
 		return node as HTMLElement
 	}
