@@ -1,6 +1,6 @@
 // TODO: don't extends this interface...
 
-import { Task } from "../renderer/RendererState"
+import { Task, TaskError } from "../renderer/RendererState"
 import { Rect } from "./rectHelpers"
 
 export const ipcChannel = "custom-ipc-channel"
@@ -15,5 +15,5 @@ export type MainToRendererIPC = {
 
 	startTest(): void
 	incrementTaskIndex(): void
-	endTest(): void
+	endTest(error?: TaskError): void
 }

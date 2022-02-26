@@ -13,11 +13,11 @@ export async function runTest(
 	renderer: MainIPCPeer<MainToRendererIPC, RendererToMainIPC>
 ) {
 	await renderer.call.startTest()
-	for (const task of test) {
-		await runTask(task, renderer)
+	test.forEach(async (task, i) => {
+		await runTask(task, renderer, i)
 		await sleep(1000)
 		await renderer.call.incrementTaskIndex()
-	}
+	})
 	await renderer.call.endTest()
 }
 
@@ -60,14 +60,27 @@ async function waitFor<T>(
 
 async function runTask(
 	task: Task,
-	renderer: MainIPCPeer<MainToRendererIPC, RendererToMainIPC>
+	renderer: MainIPCPeer<MainToRendererIPC, RendererToMainIPC>,
+	i: number
 ) {
 	async function measureElement(cssSelector: string) {
-		return await renderer.call.measureDOM(cssSelector)
+		try {
+			return await renderer.call.measureDOM(cssSelector)
+		}
+		catch (e) {
+			renderer.call.endTest({ index: i, message: e.message as string })
+			return null;
+		}
 	}
 
 	async function measureElementWithText(cssSelector: string, text: string) {
-		return await renderer.call.measureDOMWithText(cssSelector, text)
+		try {
+			return await renderer.call.measureDOMWithText(cssSelector, text)
+		}
+		catch (e) {
+			renderer.call.endTest({ index: i, message: e.message as string })
+			return null;
+		}
 	}
 
 	async function type(str: string) {
@@ -85,7 +98,7 @@ async function runTask(
 	async function clickElement(cssSelector: string, edge?: Edge) {
 		await waitForElement(cssSelector)
 		const rect = await measureElement(cssSelector)
-		await clickRect(rect, edge)
+		if (rect) await clickRect(rect, edge)
 	}
 
 	async function clickElementWithText(
@@ -95,7 +108,7 @@ async function runTask(
 	) {
 		await waitForElement(cssSelector)
 		const rect = await measureElementWithText(cssSelector, text)
-		await clickRect(rect, edge)
+		if (rect) await clickRect(rect, edge)
 	}
 
 	switch (task.type) {

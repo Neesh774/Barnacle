@@ -56,7 +56,7 @@ export function App() {
 					<Title order={3} style={{ marginBottom: "0.4rem" }}>
 						Tasks
 					</Title>
-					<div>
+					<div style={{ position: "relative" }}>
 						{state.submitStatus === "submitting" && (
 							<Overlay opacity={0.5} color="#000" />
 						)}
