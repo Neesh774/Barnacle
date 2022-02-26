@@ -52,8 +52,35 @@ async function setupTestHarness(environment: Environment) {
 	return harness
 }
 
-async function main() {
+function setupMain() {
 	const main = new RendererIPCPeer<RendererToMainIPC, MainToRendererIPC>()
+
+	main.answer.measureDOM((selector) => {
+		const node = document.querySelector(selector)
+		if (!node) {
+			throw new Error(`No element found for selector ${selector}`)
+		}
+		const rect = node.getBoundingClientRect()
+		return rect
+	})
+
+	main.answer.measureDOMWithText((selector, text) => {
+		const elms = Array.from(
+			document.querySelectorAll(selector)
+		) as HTMLElement[]
+		const elm = elms.find((elm) => elm.innerText.includes(text))
+		if (!elm)
+			throw new Error(
+				`No element found for selector ${selector} containing text ${text}`
+			)
+		return elm.getBoundingClientRect()
+	})
+
+	return main
+}
+
+async function main() {
+	const main = setupMain()
 	const app = new RendererApp({ test: [], submitStatus: "notSubmitting" }, [])
 
 	const environment: Environment = {
