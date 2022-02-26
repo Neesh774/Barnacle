@@ -24,9 +24,9 @@ function editTask(
 	newTasks[index] = newTask
 	console.log(newTasks)
 	state.submitStatus === "standby" &&
-	state.lastError &&
-	state.lastError.index == index
-		? (state.lastError = null)
+		state.lastError &&
+		state.lastError.index == index
+		? (state.lastError = undefined)
 		: ""
 	return {
 		...state,
@@ -59,7 +59,7 @@ function finishSubmittingTest(
 }
 
 function incrementRunningIndex(state: RendererState): RendererState {
-	return state.submitStatus === "submitting"
+	return state.submitStatus === "running"
 		? { ...state, runningTaskIndex: state.runningTaskIndex + 1 }
 		: state
 }
@@ -91,7 +91,7 @@ export class RendererApp extends StateMachine<
 	}
 }
 
-export function useApp() {
+export function useApp<T>(selector: (state: RendererState) => T) {
 	const { app } = useEnvironment()
-	return useStateMachine(app, (state) => state)
+	return useStateMachine(app, selector)
 }

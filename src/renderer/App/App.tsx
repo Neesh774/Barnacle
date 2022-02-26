@@ -13,7 +13,8 @@ import { useApp } from "../RendererApp"
 import { TaskItem } from "./TaskItem"
 
 export function App() {
-	const state = useApp()
+	const state = useApp((state) => state)
+	console.log({ state })
 	const { app } = useEnvironment()
 	const [testSite, setTestSite] = React.useState("")
 	const [taskErrors, setTaskErrors] = React.useState(false)
@@ -58,9 +59,7 @@ export function App() {
 					<div style={{ position: "relative" }}>
 						<Timeline
 							active={
-								state.submitStatus === "submitting"
-									? state.runningTaskIndex
-									: -1
+								state.submitStatus === "running" ? state.runningTaskIndex : -1
 							}
 							bulletSize={24}
 							lineWidth={1}
@@ -76,7 +75,7 @@ export function App() {
 												}}
 											>
 												<Title order={5} style={{ marginRight: "0.5rem" }}>
-													{state.submitStatus === "submitting" &&
+													{state.submitStatus === "running" &&
 													state.runningTaskIndex === i
 														? "Running "
 														: ""}

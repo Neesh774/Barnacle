@@ -8,7 +8,7 @@ import { TaskDetails } from "./TaskDetails"
 
 export function TaskItem({ task, index }: { task: Task; index: number }) {
 	const { app } = useEnvironment()
-	const state = useApp()
+	const state = useApp((state) => state)
 	const [selectedType, setSelectedType] = React.useState(
 		taskOptions.find((t) => t.name === task.type)
 	)
@@ -26,8 +26,7 @@ export function TaskItem({ task, index }: { task: Task; index: number }) {
 			sx={(theme) => ({
 				backgroundColor:
 					theme.colors[selectedType?.color ?? "gray"][1] +
-					(state.submitStatus === "submitting" &&
-					index === state.runningTaskIndex
+					(state.submitStatus === "running" && index === state.runningTaskIndex
 						? "90"
 						: "60"),
 			})}
