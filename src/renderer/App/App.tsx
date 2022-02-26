@@ -9,11 +9,18 @@ import {
 	NumberInput,
 	Text,
 	TextInput,
+	ThemeIcon,
 	Title,
 	useAccordionState,
 } from "@mantine/core"
 import * as React from "react"
-import { BiPlus, BiTrash, BiChevronUp, BiChevronDown } from "react-icons/bi"
+import {
+	BiPlus,
+	BiTrash,
+	BiChevronUp,
+	BiChevronDown,
+	BiRefresh,
+} from "react-icons/bi"
 import { useEnvironment } from "../Environment"
 import { useApp } from "../RendererApp"
 import { Task, taskOptions } from "../RendererState"
@@ -207,7 +214,6 @@ export function App() {
 						leftIcon={<BiTrash size={16} />}
 						variant="subtle"
 						color="red"
-						// disabled={state.test.length === 0}
 						size="sm"
 					>
 						Clear
@@ -249,6 +255,7 @@ export function App() {
 
 export function Browser() {
 	const [testSite, setTestSite] = React.useState("")
+	const iframeRef = React.useRef<HTMLIFrameElement>(null)
 	const siteInput = React.useRef<HTMLInputElement | null>(null)
 
 	return (
@@ -264,16 +271,17 @@ export function Browser() {
 				className="test-site"
 				style={{
 					display: "flex",
-					width: "100%",
-					borderBottom: "1px solid black",
+					margin: "0.4rem 0",
+					padding: "0 4rem",
+					alignItems: "center",
 				}}
 			>
 				<TextInput
 					ref={siteInput}
 					placeholder="https://example.org"
-					style={{ flex: "1 1 auto" }}
 					type="url"
 					size="xs"
+					style={{ width: "100%" }}
 				/>
 				<Button
 					style={{ marginLeft: "0.2rem" }}
@@ -284,6 +292,15 @@ export function Browser() {
 				>
 					Load
 				</Button>
+				<ActionIcon
+					onClick={() => (iframeRef.current?.src = testSite || "")}
+					size="md"
+					variant="filled"
+					color="blue"
+					style={{ marginLeft: "0.2rem" }}
+				>
+					<BiRefresh size={20} />
+				</ActionIcon>
 			</div>
 			{testSite ? (
 				<iframe
@@ -293,6 +310,7 @@ export function Browser() {
 						width: "100%",
 						height: "100%",
 					}}
+					ref={iframeRef}
 					src={testSite}
 				/>
 			) : (
