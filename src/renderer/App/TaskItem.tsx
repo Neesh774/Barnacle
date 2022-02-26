@@ -1,17 +1,10 @@
+import { ActionIcon, Alert, Container, NativeSelect } from "@mantine/core"
 import * as React from "react"
+import { BiTrash, BiXCircle } from "react-icons/bi"
 import { useEnvironment } from "../Environment"
+import { useApp } from "../RendererApp"
 import { Task, taskOptions } from "../RendererState"
 import { TaskDetails } from "./TaskDetails"
-import {
-	NativeSelect,
-	ActionIcon,
-	Container,
-	Alert,
-	Title,
-	Timeline,
-} from "@mantine/core"
-import { BiTrash, BiXCircle, BiText, BiMouseAlt } from "react-icons/bi"
-import { useApp } from "../RendererApp"
 
 export function TaskItem({ task, index }: { task: Task; index: number }) {
 	const { app } = useEnvironment()
@@ -39,7 +32,7 @@ export function TaskItem({ task, index }: { task: Task; index: number }) {
 						: "60"),
 			})}
 		>
-			{state.submitStatus === "notSubmitting" &&
+			{state.submitStatus === "standby" &&
 				state.lastError &&
 				state.lastError.index === index && (
 					<Alert

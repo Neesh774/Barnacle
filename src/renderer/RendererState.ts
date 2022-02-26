@@ -53,11 +53,15 @@ export type TaskError = {
 export type RendererState =
 	| {
 		test: Test
-		submitStatus: "notSubmitting"
-		lastError?: TaskError | null
+		submitStatus: "standby"
+		lastError?: TaskError
 	}
 	| {
 		test: Test
 		submitStatus: "submitting"
+	}
+	| {
+		test: Test
+		submitStatus: "running"
 		runningTaskIndex: number
 	}

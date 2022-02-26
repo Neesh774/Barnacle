@@ -147,7 +147,7 @@ function setupMainActions(main: MainHarness, app: RendererApp) {
 
 async function main() {
 	const main = setupMain()
-	const app = new RendererApp({ test: [], submitStatus: "notSubmitting" }, [
+	const app = new RendererApp({ test: [], submitStatus: "standby" }, [
 		TestHarnessPlugin(main),
 	])
 	setupMainActions(main, app)
