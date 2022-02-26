@@ -2,14 +2,23 @@
 	"compilerOptions": {
 		"target": "es2017",
 		"module": "commonjs",
-		"noImplicitAny": true,
+		"jsx": "react",
+		"moduleResolution": "node",
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
 		"strictNullChecks": true,
+		"strictFunctionTypes": true,
+		"noImplicitThis": true,
+		"noImplicitAny": false,
+		"noUnusedLocals": false,
+		"noUnusedParameters": false,
+		"removeComments": true,
 		"sourceMap": true,
-		"outDir": "build",
-		"baseUrl": ".",
-		"paths": {
-			"*": ["node_modules/*"]
-		}
+		"declaration": true,
+		"declarationMap": true,
+		"allowJs": true,
+		"resolveJsonModule": true,
+		"lib": ["es2019", "esnext.asynciterable", "dom"]
 	},
 	"include": ["src/**/*"]
 }

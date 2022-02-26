@@ -1,6 +1,6 @@
 import { RendererApp, RendererAppPlugin } from "../RendererApp"
 import { answerMain, callMain } from "../RendererIPC"
-import { RendererState } from "../RendererState"
+import { Environment } from "../RendererState"
 
 export const SyncWindowRectPlugin: RendererAppPlugin = (app) => {
 	return new SyncWindowRectController(app)
@@ -25,7 +25,7 @@ class SyncWindowRectController {
 		)
 	}
 
-	update(prevState: RendererState) {
+	update(prevState: Environment) {
 		const nextState = this.app.state
 		if (nextState === prevState) return
 		if (nextState.rect === prevState.rect) return

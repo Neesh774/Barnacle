@@ -2,7 +2,7 @@ import * as net from "net"
 import { deserializeError, serializeError } from "serialize-error"
 import { MainAction, MainApp } from "../main/MainApp"
 import { RendererAction, RendererApp } from "../renderer/RendererApp"
-import { RendererState } from "../renderer/RendererState"
+import { RendererState, Task } from "../renderer/RendererState"
 import { DeferredPromise } from "../shared/DeferredPromise"
 import { createProxy } from "../shared/proxyHelpers"
 import { Answerer, AnyFunctionMap, Caller } from "../shared/typeHelpers"
@@ -13,10 +13,12 @@ type Rect = { x: number; y: number; width: number; height: number }
 
 type HarnessToRenderer = {
 	measureDOM(cssSelector: string): Rect | undefined
+	measureDOMWithText(cssSelector: string, text: string): Rect | undefined
 	getState(): RendererState
 }
 
 type RendererToHarness = {
+	runTest(test: Task[]): void
 	dispatchAction(action: RendererAction): void
 }
 
@@ -158,6 +160,11 @@ async function connectToTestHarnessSocket<
 	)
 	return new HarnessSocket(socket)
 }
+
+export type RendererHarnessClient = TestHarnessAPI<
+	RendererToHarness,
+	HarnessToRenderer
+>
 
 export async function connectRendererToTestHarness() {
 	const socket = await connectToTestHarnessSocket(RENDERER_PORT)

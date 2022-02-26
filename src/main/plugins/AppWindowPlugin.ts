@@ -60,6 +60,7 @@ class AppWindow {
 		)
 
 		this.browserWindow.on("move", () => {
+			if(process.platform !== "darwin") return
 			const [x, y] = this.browserWindow.getPosition()
 			const { rect } = this.windowState
 			if (rect.x === x && rect.y === y) return
@@ -67,6 +68,7 @@ class AppWindow {
 		})
 
 		this.browserWindow.on("resize", () => {
+			if(process.platform !== "darwin") return
 			const [width, height] = this.browserWindow.getSize()
 			const { rect } = this.windowState
 			if (rect.width === width && rect.height === height) return

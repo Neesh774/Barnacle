@@ -1,10 +1,18 @@
-export type WindowRect = {
-	x: number
-	y: number
-	width: number
-	height: number
-}
+export type Task =
+	| {
+			type: "clickOnElement"
+			selector: string
+	  }
+	| {
+			type: "clickOnElementWithText"
+			text: string
+			selector: string
+	  }
+	| {
+			type: "typeText"
+			text: string
+	  }
 
 export type RendererState = {
-	rect: WindowRect
+	tasks: Task[]
 }
