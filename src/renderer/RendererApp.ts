@@ -23,6 +23,7 @@ function editTask(
 	const newTasks = [...state.test]
 	newTasks[index] = newTask
 	console.log(newTasks);
+	state.submitStatus === "notSubmitting" ? state.lastError = null : '';
 	return {
 		...state,
 		test: newTasks,
