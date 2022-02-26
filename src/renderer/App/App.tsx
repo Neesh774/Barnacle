@@ -10,6 +10,7 @@ import {
 	Text,
 	TextInput,
 	Title,
+	useAccordionState,
 } from "@mantine/core"
 import * as React from "react"
 import { BiPlus, BiTrash, BiChevronUp, BiChevronDown } from "react-icons/bi"
