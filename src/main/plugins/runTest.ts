@@ -1,7 +1,13 @@
 import * as nut from "@nut-tree/nut-js"
 import { Task, Test } from "../../renderer/RendererState"
 import { MainToRendererIPC, RendererToMainIPC } from "../../shared/ipc"
-import { Edge, Point, Rect, rectToPoint } from "../../shared/rectHelpers"
+import {
+	Edge,
+	offsetRect,
+	Point,
+	Rect,
+	rectToPoint,
+} from "../../shared/rectHelpers"
 import { MainIPCPeer } from "../MainIPC"
 
 nut.keyboard.config.autoDelayMs = 100
@@ -10,11 +16,13 @@ nut.mouse.config.mouseSpeed = 1000
 
 export async function runTest(
 	test: Test,
-	renderer: MainIPCPeer<MainToRendererIPC, RendererToMainIPC>
+	renderer: MainIPCPeer<MainToRendererIPC, RendererToMainIPC>,
+	windowRect: Rect
 ) {
 	await renderer.call.startTest()
 	for (const task of test) {
-		await runTask(task, renderer)
+		await runTask(task, renderer, windowRect)
+		console.log("Finished task", { task })
 		await sleep(1000)
 		await renderer.call.incrementTaskIndex()
 	}
@@ -60,10 +68,35 @@ async function waitFor<T>(
 
 async function runTask(
 	task: Task,
-	renderer: MainIPCPeer<MainToRendererIPC, RendererToMainIPC>
+	renderer: MainIPCPeer<MainToRendererIPC, RendererToMainIPC>,
+	windowRect: Rect
 ) {
 	async function measureElement(cssSelector: string) {
-		return await renderer.call.measureDOM(cssSelector)
+		const rectOnWindow = await renderer.call.measureDOM(cssSelector)
+		const rectOnScreen = offsetRect(rectOnWindow, {
+			x: windowRect.left,
+			y: windowRect.top,
+		})
+
+		await nut.screen.highlight(
+			new nut.Region(
+				windowRect.left,
+				windowRect.top,
+				windowRect.width,
+				windowRect.height
+			)
+		)
+
+		await nut.screen.highlight(
+			new nut.Region(
+				rectOnScreen.left,
+				rectOnScreen.top,
+				rectOnScreen.width,
+				rectOnScreen.height
+			)
+		)
+
+		return rectOnScreen
 	}
 
 	async function measureElementWithText(cssSelector: string, text: string) {
@@ -83,7 +116,7 @@ async function runTask(
 	}
 
 	async function clickElement(cssSelector: string, edge?: Edge) {
-		await waitForElement(cssSelector)
+		// await waitForElement(cssSelector)
 		const rect = await measureElement(cssSelector)
 		await clickRect(rect, edge)
 	}
@@ -93,7 +126,7 @@ async function runTask(
 		text: string,
 		edge?: Edge
 	) {
-		await waitForElement(cssSelector)
+		// await waitForElement(cssSelector)
 		const rect = await measureElementWithText(cssSelector, text)
 		await clickRect(rect, edge)
 	}

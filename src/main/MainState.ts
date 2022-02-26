@@ -1,8 +1,9 @@
+import { Rect } from "../shared/rectHelpers"
 import { randomId } from "../utils"
 
 export type WindowRect = {
-	x: number
-	y: number
+	left: number
+	top: number
 	width: number
 	height: number
 }
@@ -17,12 +18,12 @@ export type MainState = {
 	windows: WindowState[]
 }
 
-export function initRect() {
+export function initRect(): Rect {
 	return {
 		height: 600,
 		width: 800,
-		x: 200,
-		y: 200,
+		left: 200,
+		top: 200,
 	}
 }
 

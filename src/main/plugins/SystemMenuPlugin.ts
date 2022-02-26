@@ -24,8 +24,8 @@ export const SystemMenuPlugin: MainAppPlugin = (mainApp) => {
 					label: "Move Window " + i,
 					click() {
 						mainApp.dispatch.moveWindow(win.id, {
-							x: win.rect.x + 20,
-							y: win.rect.y,
+							x: win.rect.left + 20,
+							y: win.rect.top,
 						})
 					},
 				},
@@ -50,12 +50,34 @@ export const SystemMenuPlugin: MainAppPlugin = (mainApp) => {
 		const menu = Menu.buildFromTemplate([
 			{
 				label: app.name,
-				submenu: [{ role: "about" }, { role: 'toggleDevTools' }, { type: "separator" }, { role: "quit" }],
+				submenu: [
+					{ role: "about" },
+					{ role: "toggleDevTools" },
+					{ type: "separator" },
+					{ role: "quit" },
+				],
 			},
 			{
 				label: "File",
 				submenu: [{ role: "close" }],
 			},
+			{
+				label: "Edit",
+				submenu: [
+					{ label: "Undo", accelerator: "CmdOrCtrl+Z", role: "undo" },
+					{ label: "Redo", accelerator: "Shift+CmdOrCtrl+Z", role: "redo" },
+					{ type: "separator" },
+					{ label: "Cut", accelerator: "CmdOrCtrl+X", role: "cut" },
+					{ label: "Copy", accelerator: "CmdOrCtrl+C", role: "copy" },
+					{ label: "Paste", accelerator: "CmdOrCtrl+V", role: "paste" },
+					{
+						label: "Select All",
+						accelerator: "CmdOrCtrl+A",
+						role: "selectAll",
+					},
+				],
+			},
+
 			{
 				label: "Dispatch",
 				submenu: [
@@ -78,6 +100,6 @@ export const SystemMenuPlugin: MainAppPlugin = (mainApp) => {
 		update() {
 			render()
 		},
-		destroy() { },
+		destroy() {},
 	}
 }

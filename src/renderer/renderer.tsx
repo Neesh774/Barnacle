@@ -8,6 +8,7 @@
 import * as React from "react"
 import * as ReactDOM from "react-dom"
 import { MainToRendererIPC, RendererToMainIPC } from "../shared/ipc"
+import { offsetRect } from "../shared/rectHelpers"
 import { App } from "./App/App"
 import { Environment, EnvironmentProvider } from "./Environment"
 import { TestHarnessPlugin } from "./plugins/TestHarnessPlugin"
@@ -51,6 +52,7 @@ async function setupTestHarness(environment: Environment) {
 	})
 
 	return harness
+	// file:///Users/tanishqkancharla/Documents/HTML/Apartments.html
 }
 
 type MainHarness = RendererIPCPeer<RendererToMainIPC, MainToRendererIPC>
@@ -59,25 +61,54 @@ function setupMain() {
 	const main = new RendererIPCPeer<RendererToMainIPC, MainToRendererIPC>()
 
 	main.answer.measureDOM((selector) => {
-		const iframe = window.frames.top[0].document
+		const frames = window.frames.top
+		if (!frames) {
+			throw new Error(`Frame not found`)
+		}
+		const iframe = frames[0].document
+
 		const node = iframe.querySelector(selector)
-		console.log({ node })
 		if (!node) {
 			throw new Error(`No element found for selector ${selector}`)
 		}
-		const rect = node.getBoundingClientRect()
-		return rect
+		const { top, left, width, height } = node.getBoundingClientRect()
+
+		const iframeElm = document.getElementById("iframe")
+		if (!iframeElm) {
+			throw new Error(`Frame not found`)
+		}
+		const iframeRect = iframeElm.getBoundingClientRect()
+
+		return offsetRect(
+			{ top, left, width, height },
+			{ x: iframeRect.left, y: iframeRect.top }
+		)
 	})
 
 	main.answer.measureDOMWithText((selector, text) => {
-		const iframe = document.getElementsByTagName("iframe")[0]
-		const elms = Array.from(iframe.querySelectorAll(selector)) as HTMLElement[]
-		const elm = elms.find((elm) => elm.innerText.includes(text))
-		if (!elm)
+		const frames = window.frames.top
+		if (!frames) {
+			throw new Error(`Frame not found`)
+		}
+		const iframe = frames[0].document
+		const nodes = Array.from(iframe.querySelectorAll(selector)) as HTMLElement[]
+		const node = nodes.find((elm) => elm.innerText.includes(text))
+		if (!node)
 			throw new Error(
 				`No element found for selector ${selector} containing text ${text}`
 			)
-		return elm.getBoundingClientRect()
+		const { top, left, width, height } = node.getBoundingClientRect()
+
+		const iframeElm = document.getElementById("iframe")
+		if (!iframeElm) {
+			throw new Error(`Frame not found`)
+		}
+		const iframeRect = iframeElm.getBoundingClientRect()
+
+		return offsetRect(
+			{ top, left, width, height },
+			{ x: iframeRect.left, y: iframeRect.top }
+		)
 	})
 
 	return main
