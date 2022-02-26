@@ -9,7 +9,6 @@
 		"strictNullChecks": true,
 		"strictFunctionTypes": true,
 		"noImplicitThis": true,
-		"noImplicitAny": false,
 		"noUnusedLocals": false,
 		"noUnusedParameters": false,
 		"removeComments": true,
@@ -18,6 +17,10 @@
 		"declarationMap": true,
 		"allowJs": true,
 		"resolveJsonModule": true,
+		"outDir": "build",
+		"rootDir": "src",
+		"noImplicitAny": true,
+		"skipLibCheck": true,
 		"lib": ["es2019", "esnext.asynciterable", "dom"]
 	},
 	"include": ["src/**/*"]
