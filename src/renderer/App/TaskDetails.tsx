@@ -17,6 +17,7 @@ export function TaskDetails({
 	const textRef = React.useRef<HTMLInputElement>(null)
 	const deltaYRef = React.useRef<HTMLInputElement>(null)
 	const deltaXRef = React.useRef<HTMLInputElement>(null)
+	const timeoutRef = React.useRef<HTMLInputElement>(null)
 	const [saved, setSaved] = React.useState(true)
 
 	switch (task.type) {
@@ -236,6 +237,114 @@ export function TaskDetails({
 				</div>
 			)
 		case "waitForElement":
+			//selector input and number input
+			return (
+				<div style={{ display: "flex", flexDirection: "column" }}>
+					<TextInput
+						required
+						ref={selectorRef}
+						label="Selector"
+						placeholder=".submit"
+						onChange={() =>
+							setSaved(selectorRef.current?.value == task.selector)
+						}
+						error={selectorRef.current?.value === ""}
+					/>
+					<NumberInput
+						ref={timeoutRef}
+						label="Timeout"
+						placeholder="1000"
+						onChange={() =>
+							setSaved(
+								parseInt(timeoutRef.current?.value ?? "0") == task.waitPeriod
+							)
+						}
+						error={timeoutRef.current?.value === ""}
+						hideControls
+						style={{ marginRight: "0.1rem" }}
+					/>
+					<Button
+						color={color}
+						style={{
+							marginTop: "0.4rem",
+							transition: "ease-in-out 0.3s",
+						}}
+						variant="light"
+						disabled={saved}
+						onClick={() => {
+							app.dispatch.editTask(
+								{
+									...task,
+									selector: selectorRef.current?.value ?? "",
+								},
+								index
+							)
+							setSaved(true)
+						}}
+					>
+						Save
+					</Button>
+				</div>
+			)
+		case "waitForElementWithText":
+			//selector input and number input
+			return (
+				<div style={{ display: "flex", flexDirection: "column" }}>
+					<TextInput
+						required
+						ref={selectorRef}
+						label="Selector"
+						placeholder=".submit"
+						onChange={() =>
+							setSaved(selectorRef.current?.value == task.selector)
+						}
+						error={selectorRef.current?.value === ""}
+					/>
+					<TextInput
+						required
+						ref={textRef}
+						label="Text"
+						placeholder="Submit"
+						onChange={() => setSaved(textRef.current?.value == task.text)}
+						error={textRef.current?.value === ""}
+					/>
+					<NumberInput
+						ref={timeoutRef}
+						label="Timeout"
+						placeholder="1000"
+						onChange={() =>
+							setSaved(
+								parseInt(timeoutRef.current?.value ?? "0") == task.waitPeriod
+							)
+						}
+						error={timeoutRef.current?.value === ""}
+						hideControls
+						style={{ marginRight: "0.1rem" }}
+					/>
+					<Button
+						color={color}
+						style={{
+							marginTop: "0.4rem",
+							transition: "ease-in-out 0.3s",
+						}}
+						variant="light"
+						disabled={saved}
+						onClick={() => {
+							app.dispatch.editTask(
+								{
+									...task,
+									selector: selectorRef.current?.value ?? "",
+									text: textRef.current?.value ?? "",
+								},
+								index
+							)
+							setSaved(true)
+						}}
+					>
+						Save
+					</Button>
+				</div>
+			)
 
 		default:
 			return <div>Unknown task type</div>
