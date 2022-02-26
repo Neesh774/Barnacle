@@ -98,6 +98,9 @@ export function TaskItem({ task, index }: { task: Task; index: number }) {
 									index
 								)
 								break
+							case "shortcut":
+								app.dispatch.editTask({ type: "shortcut", shortcut: "" }, index)
+								break
 						}
 						setSelectedType(taskOptions.find((t) => t.name === e.target.value))
 					}}

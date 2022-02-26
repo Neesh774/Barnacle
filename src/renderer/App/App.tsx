@@ -67,7 +67,6 @@ export function App() {
 	const { app } = useEnvironment()
 	const [testSite, setTestSite] = React.useState("")
 	const [taskErrors, setTaskErrors] = React.useState(false)
-	const taskRefs = React.useRef<HTMLElement[]>(new Array(state.test.length))
 	const siteInput = React.useRef<HTMLInputElement | null>(null)
 
 	React.useEffect(() => {
