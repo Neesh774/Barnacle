@@ -137,11 +137,11 @@ function setupMainActions(main: MainHarness, app: RendererApp) {
 	})
 
 	main.answer.startTest(() => {
-		app.dispatch.startSubmittingTest()
+		app.dispatch.startTest()
 	})
 
 	main.answer.endTest((error?: TaskError) => {
-		app.dispatch.finishSubmittingTest(error)
+		app.dispatch.endTest(error)
 	})
 }
 

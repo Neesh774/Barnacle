@@ -1,11 +1,4 @@
-import {
-	Button,
-	Overlay,
-	TextInput,
-	Title,
-	Timeline,
-	ActionIcon,
-} from "@mantine/core"
+import { ActionIcon, Button, TextInput, Timeline, Title } from "@mantine/core"
 import * as React from "react"
 import { BiMouseAlt, BiPlus, BiText, BiTrash } from "react-icons/bi"
 import { useEnvironment } from "../Environment"
@@ -14,7 +7,6 @@ import { TaskItem } from "./TaskItem"
 
 export function App() {
 	const state = useApp((state) => state)
-	console.log({ state })
 	const { app } = useEnvironment()
 	const [testSite, setTestSite] = React.useState("")
 	const [taskErrors, setTaskErrors] = React.useState(false)

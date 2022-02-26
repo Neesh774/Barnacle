@@ -19,7 +19,6 @@ export const TestHarnessPlugin =
 				console.error(e)
 			}
 			submittedTests.delete(test)
-			app.dispatch.finishSubmittingTest()
 		}
 
 		return {

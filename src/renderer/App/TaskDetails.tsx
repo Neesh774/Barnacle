@@ -1,8 +1,7 @@
+import { Button, TextInput } from "@mantine/core"
 import * as React from "react"
 import { useEnvironment } from "../Environment"
-import { useApp } from "../RendererApp"
 import { Task } from "../RendererState"
-import { TextInput, Button } from "@mantine/core"
 
 export function TaskDetails({
 	task,
@@ -61,7 +60,6 @@ export function TaskDetails({
 						label="Text"
 						placeholder="Lorem ipsum"
 						onChange={() => {
-							console.log(task)
 							return setSaved(textRef.current?.value === task.text)
 						}}
 						error={textRef.current?.value === ""}
