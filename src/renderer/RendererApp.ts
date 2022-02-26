@@ -28,8 +28,8 @@ function editTask(
 	}
 }
 
-function removeTask(state: RendererState, task: Task): RendererState {
-	const newTasks = state.test.filter((oldTask) => oldTask !== task)
+function removeTask(state: RendererState, index: number): RendererState {
+	const newTasks = state.test.filter((_, i) => i !== index)
 	return {
 		...state,
 		test: newTasks,
