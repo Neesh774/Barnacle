@@ -52,6 +52,7 @@ function finishSubmittingTest(state: RendererState, error?: TaskError): Renderer
 }
 
 function incrementRunningIndex(state: RendererState): RendererState {
+	console.log("incremented");
 	return state.submitStatus === "submitting" ? { ...state, runningTaskIndex: state.runningTaskIndex + 1 } : state
 }
 
