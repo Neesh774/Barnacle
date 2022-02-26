@@ -1,16 +1,16 @@
 import { strict as assert } from "assert"
 import { describe } from "mocha"
-import { click, drag, shortcut, test } from "./testHelpers"
+import { click, drag, shortcut, test as e2eTest } from "./testHelpers"
 
 // The confusing part about this abstraction: inspecting multiple sources of truth.
 describe("App", function () {
 	this.timeout(100000)
 
-	test("Starts up.", (harness) => {
+	e2eTest("Starts up.", (harness) => {
 		assert.equal(harness.renderers.length, 1)
 	})
 
-	test("Move Window Button", async (harness) => {
+	e2eTest("Move Window Button", async (harness) => {
 		const window = harness.renderers[0]
 		const posX = window.state.rect.x
 		await click(window, "button")
@@ -19,7 +19,7 @@ describe("App", function () {
 		assert.notEqual(window.state.rect.x, posX)
 	})
 
-	test("New Window", async (harness) => {
+	e2eTest("New Window", async (harness) => {
 		await shortcut("Meta-N")
 
 		await Promise.all([harness.main.changedState(), harness.changedState()])
@@ -27,7 +27,7 @@ describe("App", function () {
 		assert.equal(harness.renderers.length, 2)
 	})
 
-	test("Drag Window", async (harness) => {
+	e2eTest("Drag Window", async (harness) => {
 		const window = harness.renderers[0]
 
 		const { y, x, width } = window.state.rect
@@ -41,7 +41,7 @@ describe("App", function () {
 		assert.equal(newRect.x, x + 30)
 	})
 
-	test("Resize Window", async (harness) => {
+	e2eTest("Resize Window", async (harness) => {
 		const window = harness.renderers[0]
 
 		const { y, x, width, height } = window.state.rect
