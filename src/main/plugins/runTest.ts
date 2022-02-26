@@ -13,6 +13,7 @@ import { MainIPCPeer } from "../MainIPC"
 nut.keyboard.config.autoDelayMs = 100
 nut.mouse.config.autoDelayMs = 100
 nut.mouse.config.mouseSpeed = 1000
+nut.screen.config.highlightDurationMs = 500
 
 export async function runTest(
 	test: Test,
@@ -27,7 +28,7 @@ export async function runTest(
 			renderer.call.endTest({ index, message: e.message as string })
 			return
 		}
-		await sleep(1000)
+		await sleep(400)
 		await renderer.call.incrementTaskIndex()
 	})
 	await renderer.call.endTest()

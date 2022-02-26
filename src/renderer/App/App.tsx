@@ -1,6 +1,6 @@
-import { Button, Overlay, Progress, TextInput, Title } from "@mantine/core"
+import { Button, Overlay, TextInput, Title, Timeline } from "@mantine/core"
 import * as React from "react"
-import { BiPlus, BiTrash } from "react-icons/bi"
+import { BiMouseAlt, BiPlus, BiText, BiTrash } from "react-icons/bi"
 import { useEnvironment } from "../Environment"
 import { useApp } from "../RendererApp"
 import { TaskItem } from "./Task"
@@ -24,13 +24,6 @@ export function App() {
 
 	return (
 		<div style={{ display: "flex", height: "100%" }}>
-			{state.submitStatus === "submitting" && (
-				<Progress
-					style={{ position: "absolute", top: "0", width: "100%" }}
-					color="blue"
-					value={state.runningTaskIndex / state.test.length}
-				/>
-			)}
 			<div
 				className="tasks"
 				style={{
@@ -59,9 +52,32 @@ export function App() {
 						{state.submitStatus === "submitting" && (
 							<Overlay opacity={0.3} color="#000" />
 						)}
-						{state.test.map((task, i) => (
-							<TaskItem index={i} key={i} task={task} />
-						))}
+						<Timeline
+							active={
+								state.submitStatus === "submitting"
+									? state.runningTaskIndex
+									: -1
+							}
+							bulletSize={24}
+							lineWidth={1}
+						>
+							{state.test.map((task, i) => {
+								return (
+									<Timeline.Item
+										title={`Task ${i + 1}`}
+										bullet={
+											task.type === "typeText" ? (
+												<BiText size={12} />
+											) : (
+												<BiMouseAlt size={12} />
+											)
+										}
+									>
+										<TaskItem index={i} key={i} task={task} />
+									</Timeline.Item>
+								)
+							})}
+						</Timeline>
 					</div>
 					<Button
 						onClick={() => {
