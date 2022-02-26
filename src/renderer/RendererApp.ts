@@ -36,7 +36,7 @@ function removeTask(state: RendererState, task: Task): RendererState {
 	}
 }
 
-function startSubmittingTest(state: RendererState): RendererState {
+function submitTest(state: RendererState): RendererState {
 	return { ...state, submitStatus: "submitting" }
 }
 
@@ -44,6 +44,7 @@ const rendererReducers = {
 	appendTask,
 	removeTask,
 	editTask,
+	submitTest,
 }
 
 export type RendererAction = Actions<typeof rendererReducers>

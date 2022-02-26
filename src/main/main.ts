@@ -25,10 +25,7 @@ async function setupTestHarness(config: Config) {
 
 app.whenReady().then(async () => {
 	const config = setupConfig()
-	await setupTestHarness(config)
 	const mainApp = new MainApp([AppWindowPlugin({ config }), SystemMenuPlugin])
-
-	// mainApp.onDispatch((action) => harness?.call.dispatchAction(action))
 
 	const environment: MainEnvironment = { config, app: mainApp }
 

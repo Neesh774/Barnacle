@@ -1,6 +1,7 @@
 import * as net from "net"
 import { deserializeError, serializeError } from "serialize-error"
 import { MainAction, MainApp } from "../main/MainApp"
+import { runTest } from "../main/plugins/runTest"
 import { RendererAction, RendererApp } from "../renderer/RendererApp"
 import { RendererState, Task } from "../renderer/RendererState"
 import { DeferredPromise } from "../shared/DeferredPromise"
@@ -9,7 +10,6 @@ import { Rect } from "../shared/rectHelpers"
 import { Answerer, AnyFunctionMap, Caller } from "../shared/typeHelpers"
 import { StateMachine } from "../StateMachine"
 import { randomId } from "../utils"
-import { runTest } from "./runTest"
 
 type HarnessToRenderer = {
 	measureDOM(cssSelector: string): Rect
