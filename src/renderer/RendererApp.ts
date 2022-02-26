@@ -23,7 +23,7 @@ function editTask(
 	const newTasks = [...state.test]
 	newTasks[index] = newTask
 	console.log(newTasks)
-	state.submitStatus === "notSubmitting" &&
+	state.submitStatus === "standby" &&
 	state.lastError &&
 	state.lastError.index == index
 		? (state.lastError = null)
@@ -55,7 +55,7 @@ function finishSubmittingTest(
 	state: RendererState,
 	error?: TaskError
 ): RendererState {
-	return { ...state, submitStatus: "notSubmitting", lastError: error }
+	return { ...state, submitStatus: "standby", lastError: error }
 }
 
 function incrementRunningIndex(state: RendererState): RendererState {
