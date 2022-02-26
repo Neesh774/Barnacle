@@ -22,6 +22,7 @@ function editTask(
 ): RendererState {
 	const newTasks = [...state.test]
 	newTasks[index] = newTask
+	console.log(newTasks);
 	return {
 		...state,
 		test: newTasks,
@@ -30,7 +31,7 @@ function editTask(
 
 function removeTask(state: RendererState, index: number): RendererState {
 	const newTasks = state.test.filter((_, i) => i !== index)
-	console.log(newTasks);
+	console.log(newTasks, index);
 	return {
 		...state,
 		test: newTasks,

@@ -1,11 +1,11 @@
 import * as React from "react"
-import { useApp } from "../RendererApp";
-import { useEnvironment } from "../Environment";
+import { useApp } from "../RendererApp"
+import { useEnvironment } from "../Environment"
 import { Task } from "./Task"
 
 export function App() {
 	const state = useApp()
-	const { app } = useEnvironment();
+	const { app } = useEnvironment()
 	const [testSite, setTestSite] = React.useState("")
 	const siteInput = React.useRef(null)
 
@@ -19,15 +19,26 @@ export function App() {
 					padding: "2rem 1rem",
 				}}
 			>
-				<h1>Tasks</h1>
-				{state.test.map((task, i) => (
-					<Task index={i} key={i} task={task} />
-				))}
+				<div>
+					<h1>Tasks</h1>
+					{state.test.map((task, i) => (
+						<Task index={i} key={i} task={task} />
+					))}
+					<button
+						onClick={() => {
+							app.dispatch.appendTask({ type: "clickOnElement", selector: "" })
+						}}
+					>
+						New Task
+					</button>
+				</div>
 				<button
 					onClick={() => {
-						app.dispatch.appendTask({ type: 'clickOnElement', selector: ''})
+						app.dispatch.submitTest()
 					}}
-					>New Task</button>
+				>
+					Submit
+				</button>
 			</div>
 			<div
 				className="preview"
