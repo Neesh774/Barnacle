@@ -5,12 +5,15 @@ import {
 	Title,
 	Timeline,
 	ActionIcon,
+	Accordion,
+	ThemeIcon,
 } from "@mantine/core"
 import * as React from "react"
-import { BiMouseAlt, BiPlus, BiText, BiTrash } from "react-icons/bi"
+import { BiPlus, BiTrash } from "react-icons/bi"
 import { useEnvironment } from "../Environment"
 import { useApp } from "../RendererApp"
 import { TaskItem } from "./TaskItem"
+import { taskOptions } from "../RendererState"
 
 export function App() {
 	const state = useApp((state) => state)
@@ -56,11 +59,11 @@ export function App() {
 					<Title order={3} style={{ marginBottom: "0.4rem" }}>
 						Tasks
 					</Title>
-					<div style={{ position: "relative" }}>
+					<Accordion disableIconRotation>
 						{state.test.map((task, i) => {
-							return <TaskItem index={i} key={i} task={task} />
+							return <TaskItem index={i} task={task} key={i} />
 						})}
-					</div>
+					</Accordion>
 					<Button
 						onClick={() => {
 							app.dispatch.appendTask({ type: "clickOnElement", selector: "" })
