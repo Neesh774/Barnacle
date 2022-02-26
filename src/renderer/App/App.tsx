@@ -125,7 +125,7 @@ export function App() {
 												onClick={() => app.dispatch.removeTask(i)}
 												size="md"
 											>
-												<BiTrash size="12" />
+												<BiTrash size="20" />
 											</ActionIcon>
 										</div>
 									}
