@@ -151,19 +151,9 @@ export function App() {
 											style={{
 												display: "flex",
 												alignItems: "center",
-												justifyContent: "space-between",
 											}}
 										>
 											{getSemanticName(task)}
-											<div style={{ display: "flex", alignItems: "center" }}>
-												<ActionIcon
-													color="red"
-													onClick={() => app.dispatch.removeTask(i)}
-													size="md"
-												>
-													<BiTrash size="20" />
-												</ActionIcon>
-											</div>
 										</div>
 									}
 									icon={taskSettings?.icon}
@@ -293,7 +283,9 @@ export function Browser() {
 					Load
 				</Button>
 				<ActionIcon
-					onClick={() => (iframeRef.current?.src = testSite || "")}
+					onClick={() =>
+						iframeRef.current ? (iframeRef.current.src = testSite || "") : null
+					}
 					size="md"
 					variant="filled"
 					color="blue"

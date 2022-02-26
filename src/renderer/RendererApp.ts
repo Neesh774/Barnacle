@@ -24,14 +24,18 @@ function editTask(
 	newTasks[index] = newTask
 	console.log(newTasks)
 	state.submitStatus === "standby" &&
-	state.lastError &&
-	state.lastError.index == index
+		state.lastError &&
+		state.lastError.index == index
 		? (state.lastError = undefined)
 		: ""
 	return {
 		...state,
 		test: newTasks,
 	}
+}
+
+function setTasks(state: RendererState, tasks: Task[]): RendererState {
+	return { ...state, test: tasks }
 }
 
 function clearTasks(state: RendererState): RendererState {
@@ -84,6 +88,7 @@ const rendererReducers = {
 	removeTask,
 	editTask,
 	clearTasks,
+	setTasks,
 
 	setOptions,
 
