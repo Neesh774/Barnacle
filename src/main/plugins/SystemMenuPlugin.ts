@@ -50,7 +50,7 @@ export const SystemMenuPlugin: MainAppPlugin = (mainApp) => {
 		const menu = Menu.buildFromTemplate([
 			{
 				label: app.name,
-				submenu: [{ role: "about" }, { type: "separator" }, { role: "quit" }],
+				submenu: [{ role: "about" }, { role: 'toggleDevTools' }, { type: "separator" }, { role: "quit" }],
 			},
 			{
 				label: "File",
@@ -78,6 +78,6 @@ export const SystemMenuPlugin: MainAppPlugin = (mainApp) => {
 		update() {
 			render()
 		},
-		destroy() {},
+		destroy() { },
 	}
 }

@@ -8,7 +8,7 @@
 import * as React from "react"
 import * as ReactDOM from "react-dom"
 import { MainToRendererIPC, RendererToMainIPC } from "../shared/ipc"
-import { App } from "./App"
+import { App } from "./App/App"
 import { Environment, EnvironmentProvider } from "./Environment"
 import { RendererApp } from "./RendererApp"
 import { RendererIPCPeer } from "./RendererIPC"
