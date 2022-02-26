@@ -155,11 +155,10 @@ export function App() {
 						onClick={() => {
 							app.dispatch.startSubmittingTest()
 						}}
-						variant="gradient"
-						gradient={{ from: "indigo", to: "cyan" }}
 						disabled={taskErrors}
 						style={{ transition: "ease-in-out 0.2s" }}
 						loading={state.submitStatus === "submitting"}
+						size="sm"
 					>
 						Submit
 					</Button>
@@ -169,10 +168,10 @@ export function App() {
 						}}
 						style={{ display: "flex", transition: "ease-in-out 0.2s" }}
 						leftIcon={<BiTrash size={16} />}
-						variant="outline"
-						color="gray"
-						disabled={state.test.length === 0}
-						size="xs"
+						variant="subtle"
+						color="red"
+						// disabled={state.test.length === 0}
+						size="sm"
 					>
 						Clear
 					</Button>
@@ -192,13 +191,12 @@ export function App() {
 					style={{
 						display: "flex",
 						width: "100%",
-						margin: "0.4rem 0",
-						padding: "0 0.6rem",
+						padding: "0.4rem 0",
 					}}
 				>
 					<TextInput
 						ref={siteInput}
-						style={{ width: "100%" }}
+						style={{ flex: "1 1 auto" }}
 						type="url"
 						size="xs"
 					/>
@@ -218,7 +216,8 @@ export function App() {
 						display: "flex",
 						width: "100%",
 						height: "100%",
-						border: "1px solid black",
+						border: "1px solid rgb(84,86,88)",
+						borderRadius: "4px",
 					}}
 					src={testSite}
 				></iframe>

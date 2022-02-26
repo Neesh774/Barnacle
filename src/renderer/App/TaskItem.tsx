@@ -1,6 +1,6 @@
-import { ActionIcon, Alert, Container, NativeSelect } from "@mantine/core"
+import { Alert, Container, NativeSelect } from "@mantine/core"
 import * as React from "react"
-import { BiTrash, BiXCircle } from "react-icons/bi"
+import { BiXCircle } from "react-icons/bi"
 import { useEnvironment } from "../Environment"
 import { useApp } from "../RendererApp"
 import { Task, taskOptions } from "../RendererState"
@@ -18,7 +18,7 @@ export function TaskItem({ task, index }: { task: Task; index: number }) {
 			style={{
 				width: "100%",
 				borderRadius: "8px",
-				margin: "0.5rem 0",
+				// margin: "0.5rem 0",
 				padding: "0.5rem 0.6rem",
 				display: "flex",
 				flexDirection: "column",
