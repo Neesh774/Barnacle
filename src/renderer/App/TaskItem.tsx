@@ -81,6 +81,23 @@ export function TaskItem({ task, index }: { task: Task; index: number }) {
 									},
 									index
 								)
+							case "waitForElement":
+								app.dispatch.editTask(
+									{ type: "waitForElement", selector: "", waitPeriod: 0 },
+									index
+								)
+								break
+							case "waitForElementWithText":
+								app.dispatch.editTask(
+									{
+										type: "waitForElementWithText",
+										text: "",
+										selector: "",
+										waitPeriod: 0,
+									},
+									index
+								)
+								break
 						}
 						setSelectedType(taskOptions.find((t) => t.name === e.target.value))
 					}}
