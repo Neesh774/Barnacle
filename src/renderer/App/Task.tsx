@@ -57,6 +57,23 @@ export function TaskItem({ task, index }: { task: Task; index: number }) {
 							{ ...task, type: e.target.value } as any,
 							index
 						)
+						switch (e.target.value) {
+							case "clickOnElement":
+								app.dispatch.editTask(
+									{ type: "clickOnElement", selector: "" },
+									index
+								)
+								break
+							case "typeText":
+								app.dispatch.editTask({ type: "typeText", text: "" }, index)
+								break
+							case "clickOnElementWithText":
+								app.dispatch.editTask(
+									{ type: "clickOnElementWithText", text: "", selector: "" },
+									index
+								)
+								break
+						}
 						setSelectedType(taskOptions.find((t) => t.name === e.target.value))
 					}}
 					value={task.type}

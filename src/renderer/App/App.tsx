@@ -16,7 +16,6 @@ export function App() {
 		setTaskErrors(
 			state.test.every((task) => {
 				return !Object.values(task).every((v) => {
-					console.log(v.length > 0)
 					return v.length > 0
 				})
 			})

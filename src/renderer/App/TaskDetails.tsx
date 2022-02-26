@@ -60,13 +60,15 @@ export function TaskDetails({
 						ref={textRef}
 						label="Text"
 						placeholder="Lorem ipsum"
-						onChange={() => setSaved(textRef.current?.value == task.text)}
+						onChange={() => {
+							console.log(task)
+							return setSaved(textRef.current?.value === task.text)
+						}}
 						error={textRef.current?.value === ""}
 					/>
 					<Button
 						color={color}
 						style={{
-							width: "30%",
 							marginTop: "0.4rem",
 							transition: "ease-in-out 0.3s",
 						}}
