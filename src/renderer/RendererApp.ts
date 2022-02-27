@@ -22,7 +22,6 @@ function editTask(
 ): RendererState {
 	const newTasks = [...state.test]
 	newTasks[index] = newTask
-	console.log(newTasks)
 	state.submitStatus === "standby" &&
 		state.lastError &&
 		state.lastError.index == index
@@ -48,7 +47,6 @@ function clearTasks(state: RendererState): RendererState {
 
 function removeTask(state: RendererState, index: number): RendererState {
 	const newTasks = state.test.filter((_, i) => i !== index)
-	console.log(newTasks, index)
 	state.submitStatus === "standby" &&
 		state.lastError &&
 		state.lastError.index == index

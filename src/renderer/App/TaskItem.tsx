@@ -140,7 +140,6 @@ export function TaskItem({ task, index }: { task: Task; index: number }) {
 							default:
 								break
 						}
-						console.log(e.target.value)
 						setSelectedType(taskOptions.find((t) => t.name === e.target.value))
 					}}
 					value={task.type}

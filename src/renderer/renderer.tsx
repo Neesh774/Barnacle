@@ -87,7 +87,6 @@ function setupMain() {
 		const iframe = frames[0].document
 		const nodes = Array.from(iframe.querySelectorAll(selector)) as HTMLElement[]
 		const node = nodes.find((elm) => {
-			console.log(elm.innerText)
 			return exact ? elm.innerText === text : elm.innerText.includes(text)
 		})
 		if (!node)

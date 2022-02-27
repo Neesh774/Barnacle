@@ -96,8 +96,8 @@ class HarnessSocket {
 export class TestHarnessAPI<
 	C extends AnyFunctionMap,
 	A extends AnyFunctionMap
-> {
-	constructor(private socket: HarnessSocket) {}
+	> {
+	constructor(private socket: HarnessSocket) { }
 
 	call = createProxy<Caller<C>>((fn: any, ...args) => {
 		const deferred = new DeferredPromise<any>()
@@ -108,7 +108,6 @@ export class TestHarnessAPI<
 			if (message.type !== "response") return
 			if (message.id !== id) return
 
-			// console.log("response", id, Date.now() - ms)
 			if (message.error) {
 				deferred.reject(deserializeError(message.error))
 			} else {
@@ -335,7 +334,7 @@ export class TestHarness extends StateMachine<
 		})
 	}
 
-	async destroy() {}
+	async destroy() { }
 
 	static async create(
 		mainPort: number = MAIN_PORT,
