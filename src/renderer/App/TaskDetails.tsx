@@ -1,5 +1,6 @@
-import { Button, NumberInput, TextInput } from "@mantine/core"
+import { ActionIcon, Button, NumberInput, TextInput } from "@mantine/core"
 import * as React from "react"
+import { BiTrash } from "react-icons/bi"
 import { useEnvironment } from "../Environment"
 import { Task } from "../RendererState"
 
@@ -34,24 +35,44 @@ export function TaskDetails({
 							setSaved(selectorRef.current?.value == task.selector)
 						}
 					/>
-					<Button
-						color={color}
-						style={{ marginTop: "0.4rem", transition: "ease-in-out 0.3s" }}
-						variant="light"
-						disabled={saved}
-						onClick={() => {
-							app.dispatch.editTask(
-								{
-									...task,
-									selector: selectorRef.current?.value ?? "",
-								},
-								index
-							)
-							setSaved(true)
+					<div
+						style={{
+							display: "flex",
+							marginTop: "0.4rem",
+							alignItems: "center",
 						}}
 					>
-						Save
-					</Button>
+						<Button
+							color={color}
+							style={{
+								width: "100%",
+								transition: "ease-in-out 0.3s",
+							}}
+							variant="light"
+							disabled={saved}
+							onClick={() => {
+								app.dispatch.editTask(
+									{
+										...task,
+										selector: selectorRef.current?.value ?? "",
+									},
+									index
+								)
+								setSaved(true)
+							}}
+						>
+							Save
+						</Button>
+						<ActionIcon
+							style={{ zIndex: 1000, marginLeft: "0.4rem" }}
+							color="red"
+							onClick={() => app.dispatch.removeTask(index)}
+							size="lg"
+							variant="filled"
+						>
+							<BiTrash size="24" />
+						</ActionIcon>
+					</div>
 				</div>
 			)
 		case "typeText":
@@ -67,27 +88,45 @@ export function TaskDetails({
 						}}
 						error={textRef.current?.value === ""}
 					/>
-					<Button
-						color={color}
+					<div
 						style={{
 							marginTop: "0.4rem",
-							transition: "ease-in-out 0.3s",
-						}}
-						variant="light"
-						disabled={saved}
-						onClick={() => {
-							app.dispatch.editTask(
-								{
-									...task,
-									text: textRef.current?.value ?? "",
-								},
-								index
-							)
-							setSaved(true)
+							display: "flex",
+							alignItems: "center",
 						}}
 					>
-						Save
-					</Button>
+						<Button
+							color={color}
+							style={{
+								width: "100%",
+								transition: "ease-in-out 0.3s",
+							}}
+							size="lg"
+							variant="light"
+							disabled={saved}
+							onClick={() => {
+								app.dispatch.editTask(
+									{
+										...task,
+										text: textRef.current?.value ?? "",
+									},
+									index
+								)
+								setSaved(true)
+							}}
+						>
+							Save
+						</Button>
+						<ActionIcon
+							style={{ zIndex: 1000, marginLeft: "0.4rem" }}
+							color="red"
+							onClick={() => app.dispatch.removeTask(index)}
+							size="lg"
+							variant="filled"
+						>
+							<BiTrash size="24" />
+						</ActionIcon>
+					</div>
 				</div>
 			)
 		case "shortcut":
@@ -103,27 +142,45 @@ export function TaskDetails({
 						}}
 						error={textRef.current?.value === ""}
 					/>
-					<Button
-						color={color}
+					<div
 						style={{
 							marginTop: "0.4rem",
-							transition: "ease-in-out 0.3s",
-						}}
-						variant="light"
-						disabled={saved}
-						onClick={() => {
-							app.dispatch.editTask(
-								{
-									...task,
-									shortcut: textRef.current?.value ?? "",
-								},
-								index
-							)
-							setSaved(true)
+							display: "flex",
+							alignItems: "center",
 						}}
 					>
-						Save
-					</Button>
+						<Button
+							color={color}
+							style={{
+								width: "100%",
+								transition: "ease-in-out 0.3s",
+							}}
+							size="lg"
+							variant="light"
+							disabled={saved}
+							onClick={() => {
+								app.dispatch.editTask(
+									{
+										...task,
+										shortcut: textRef.current?.value ?? "",
+									},
+									index
+								)
+								setSaved(true)
+							}}
+						>
+							Save
+						</Button>
+						<ActionIcon
+							style={{ zIndex: 1000, marginLeft: "0.4rem" }}
+							color="red"
+							onClick={() => app.dispatch.removeTask(index)}
+							size="lg"
+							variant="filled"
+						>
+							<BiTrash size="24" />
+						</ActionIcon>
+					</div>
 				</div>
 			)
 		case "clickOnElementWithText":
@@ -147,28 +204,46 @@ export function TaskDetails({
 						onChange={() => setSaved(textRef.current?.value == task.text)}
 						error={textRef.current?.value === ""}
 					/>
-					<Button
-						color={color}
+					<div
 						style={{
 							marginTop: "0.4rem",
-							transition: "ease-in-out 0.3s",
-						}}
-						variant="light"
-						disabled={saved}
-						onClick={() => {
-							app.dispatch.editTask(
-								{
-									...task,
-									selector: selectorRef.current?.value ?? "",
-									text: textRef.current?.value ?? "",
-								},
-								index
-							)
-							setSaved(true)
+							display: "flex",
+							alignItems: "center",
 						}}
 					>
-						Save
-					</Button>
+						<Button
+							color={color}
+							style={{
+								width: "100%",
+								transition: "ease-in-out 0.3s",
+							}}
+							size="lg"
+							variant="light"
+							disabled={saved}
+							onClick={() => {
+								app.dispatch.editTask(
+									{
+										...task,
+										selector: selectorRef.current?.value ?? "",
+										text: textRef.current?.value ?? "",
+									},
+									index
+								)
+								setSaved(true)
+							}}
+						>
+							Save
+						</Button>
+						<ActionIcon
+							style={{ zIndex: 1000, marginLeft: "0.4rem" }}
+							color="red"
+							onClick={() => app.dispatch.removeTask(index)}
+							size="lg"
+							variant="filled"
+						>
+							<BiTrash size="24" />
+						</ActionIcon>
+					</div>
 				</div>
 			)
 		case "scrollElement":
@@ -185,7 +260,7 @@ export function TaskDetails({
 						}
 						error={selectorRef.current?.value === ""}
 					/>
-					<div style={{ display: "flex" }}>
+					<div style={{ display: "flex", alignItems: "center" }}>
 						<NumberInput
 							ref={deltaYRef}
 							label="Delta Y"
@@ -209,31 +284,49 @@ export function TaskDetails({
 							error={deltaXRef.current?.value === ""}
 						/>
 					</div>
-					<Button
-						color={color}
+					<div
 						style={{
 							marginTop: "0.4rem",
-							transition: "ease-in-out 0.3s",
-						}}
-						variant="light"
-						disabled={saved}
-						onClick={() => {
-							app.dispatch.editTask(
-								{
-									...task,
-									selector: selectorRef.current?.value ?? "",
-									delta: {
-										x: parseInt(deltaXRef.current?.value ?? "0"),
-										y: parseInt(deltaYRef.current?.value ?? "0"),
-									},
-								},
-								index
-							)
-							setSaved(true)
+							display: "flex",
+							alignItems: "center",
 						}}
 					>
-						Save
-					</Button>
+						<Button
+							color={color}
+							style={{
+								width: "100%",
+								transition: "ease-in-out 0.3s",
+							}}
+							size="lg"
+							variant="light"
+							disabled={saved}
+							onClick={() => {
+								app.dispatch.editTask(
+									{
+										...task,
+										selector: selectorRef.current?.value ?? "",
+										delta: {
+											x: parseInt(deltaXRef.current?.value ?? "0"),
+											y: parseInt(deltaYRef.current?.value ?? "0"),
+										},
+									},
+									index
+								)
+								setSaved(true)
+							}}
+						>
+							Save
+						</Button>
+						<ActionIcon
+							style={{ zIndex: 1000, marginLeft: "0.4rem" }}
+							color="red"
+							onClick={() => app.dispatch.removeTask(index)}
+							size="lg"
+							variant="filled"
+						>
+							<BiTrash size="24" />
+						</ActionIcon>
+					</div>
 				</div>
 			)
 		case "waitForElement":
@@ -263,27 +356,45 @@ export function TaskDetails({
 						hideControls
 						style={{ marginRight: "0.1rem" }}
 					/>
-					<Button
-						color={color}
+					<div
 						style={{
 							marginTop: "0.4rem",
-							transition: "ease-in-out 0.3s",
-						}}
-						variant="light"
-						disabled={saved}
-						onClick={() => {
-							app.dispatch.editTask(
-								{
-									...task,
-									selector: selectorRef.current?.value ?? "",
-								},
-								index
-							)
-							setSaved(true)
+							display: "flex",
+							alignItems: "center",
 						}}
 					>
-						Save
-					</Button>
+						<Button
+							color={color}
+							style={{
+								width: "100%",
+								transition: "ease-in-out 0.3s",
+							}}
+							size="lg"
+							variant="light"
+							disabled={saved}
+							onClick={() => {
+								app.dispatch.editTask(
+									{
+										...task,
+										selector: selectorRef.current?.value ?? "",
+									},
+									index
+								)
+								setSaved(true)
+							}}
+						>
+							Save
+						</Button>
+						<ActionIcon
+							style={{ zIndex: 1000, marginLeft: "0.4rem" }}
+							color="red"
+							onClick={() => app.dispatch.removeTask(index)}
+							size="lg"
+							variant="filled"
+						>
+							<BiTrash size="24" />
+						</ActionIcon>
+					</div>
 				</div>
 			)
 		case "waitForElementWithText":
@@ -321,28 +432,45 @@ export function TaskDetails({
 						hideControls
 						style={{ marginRight: "0.1rem" }}
 					/>
-					<Button
-						color={color}
+					<div
 						style={{
 							marginTop: "0.4rem",
-							transition: "ease-in-out 0.3s",
-						}}
-						variant="light"
-						disabled={saved}
-						onClick={() => {
-							app.dispatch.editTask(
-								{
-									...task,
-									selector: selectorRef.current?.value ?? "",
-									text: textRef.current?.value ?? "",
-								},
-								index
-							)
-							setSaved(true)
+							display: "flex",
+							alignItems: "center",
 						}}
 					>
-						Save
-					</Button>
+						<Button
+							color={color}
+							style={{
+								transition: "ease-in-out 0.3s",
+								width: "100%",
+							}}
+							variant="light"
+							disabled={saved}
+							onClick={() => {
+								app.dispatch.editTask(
+									{
+										...task,
+										selector: selectorRef.current?.value ?? "",
+										text: textRef.current?.value ?? "",
+									},
+									index
+								)
+								setSaved(true)
+							}}
+						>
+							Save
+						</Button>
+						<ActionIcon
+							style={{ zIndex: 1000, marginLeft: "0.4rem" }}
+							color="red"
+							onClick={() => app.dispatch.removeTask(index)}
+							size="lg"
+							variant="filled"
+						>
+							<BiTrash size="24" />
+						</ActionIcon>
+					</div>
 				</div>
 			)
 

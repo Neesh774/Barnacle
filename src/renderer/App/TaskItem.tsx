@@ -1,6 +1,6 @@
-import { Alert, Container, NativeSelect } from "@mantine/core"
+import { Alert, Button, Container, NativeSelect } from "@mantine/core"
 import * as React from "react"
-import { BiXCircle } from "react-icons/bi"
+import { BiChevronDown, BiChevronUp, BiXCircle } from "react-icons/bi"
 import { useEnvironment } from "../Environment"
 import { useApp } from "../RendererApp"
 import { Task, taskOptions } from "../RendererState"
@@ -39,9 +39,42 @@ export function TaskItem({ task, index }: { task: Task; index: number }) {
 				style={{
 					display: "flex",
 					marginBottom: "0.2rem",
-					alignItems: "center",
+					alignItems: "flex-start",
+					flexDirection: "column",
 				}}
 			>
+				<div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+					{index != 0 && state.test.length > 1 && (
+						<Button
+							onClick={() => {
+								const newTest = [...state.test]
+								newTest.splice(index - 1, 0, newTest.splice(index, 1)[0])
+								app.dispatch.setTasks(newTest)
+							}}
+							rightIcon={<BiChevronUp />}
+							color="gray"
+							variant="light"
+							style={{ width: "50%", marginRight: "0.2rem" }}
+						>
+							Move Up
+						</Button>
+					)}
+					{index != state.test.length - 1 && state.test.length > 1 && (
+						<Button
+							onClick={() => {
+								const newTest = [...state.test]
+								newTest.splice(index + 1, 0, newTest.splice(index, 1)[0])
+								app.dispatch.setTasks(newTest)
+							}}
+							leftIcon={<BiChevronDown />}
+							color="gray"
+							variant="light"
+							style={{ width: "50%", marginLeft: "0.2rem" }}
+						>
+							Move Down
+						</Button>
+					)}
+				</div>
 				<NativeSelect
 					onChange={(e) => {
 						switch (e.target.value) {
