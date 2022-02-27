@@ -20,6 +20,7 @@ export type MainToRendererIPC = {
 	measureDOM(cssSelector: string): Rect
 	measureDOMWithText(cssSelector: string, text: string, exact: boolean): Rect
 	scrollElement(cssSelector: string, delta: PointDelta): void
+	getElementText(cssSelector: string): string
 
 	startTest(): void
 	incrementTaskIndex(): void

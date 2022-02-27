@@ -134,6 +134,11 @@ function setupMain() {
 		node.scrollBy({ top: delta.y, left: delta.x })
 	})
 
+	main.answer.getElementText((selector) => {
+		const node = getElement(selector)
+		return node.innerText
+	})
+
 	return main
 }
 
