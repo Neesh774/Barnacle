@@ -227,6 +227,7 @@ export function App() {
 					</Accordion>
 					<Button
 						onClick={() => {
+							if (app.state.submitStatus !== "standby") app.dispatch.resetTest()
 							app.dispatch.appendTask({ type: "clickOnElement", selector: "" })
 						}}
 						variant="outline"
@@ -310,6 +311,7 @@ export function Browser() {
 					style={{ width: "100%" }}
 					value={url}
 					onChange={(event) => {
+						if (app.state.submitStatus !== "standby") app.dispatch.resetTest()
 						app.dispatch.setUrl(event.currentTarget.value || "")
 						setLoaded(false)
 					}}
