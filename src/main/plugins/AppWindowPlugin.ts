@@ -19,9 +19,9 @@ import { loadState, saveState } from "./saveState"
 
 export const AppWindowPlugin =
 	(environment: Omit<MainEnvironment, "app">): MainAppPlugin =>
-	(app) => {
-		return new AppWindowController({ ...environment, app })
-	}
+		(app) => {
+			return new AppWindowController({ ...environment, app })
+		}
 
 class AppWindow {
 	private browserWindow: BrowserWindow
