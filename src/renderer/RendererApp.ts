@@ -6,7 +6,7 @@ import {
 } from "../StateMachine"
 import { useEnvironment } from "./Environment"
 import { useStateMachine } from "./hooks/useStateMachine"
-import { RendererState, Task, TaskError, TestOptions } from "./RendererState"
+import { Preset, RendererState, Task, TaskError, TestOptions } from "./RendererState"
 
 function appendTask(state: RendererState, task: Task): RendererState {
 	return {
@@ -87,6 +87,14 @@ function setUrl(state: RendererState, url: string): RendererState {
 	return { ...state, url }
 }
 
+function addSavedTest(state: RendererState, save: Preset): RendererState {
+	return { ...state, savedTests: [...state.savedTests, save] }
+}
+function deleteSavedTest(state: RendererState, index: number): RendererState {
+	const newTests = state.savedTests.filter((_, i) => i !== index)
+	return { ...state, savedTests: newTests }
+}
+
 const rendererReducers = {
 	appendTask,
 	removeTask,
@@ -103,6 +111,9 @@ const rendererReducers = {
 	startTest,
 	incrementRunningIndex,
 	endTest,
+
+	addSavedTest,
+	deleteSavedTest,
 }
 
 export type RendererAction = Actions<typeof rendererReducers>

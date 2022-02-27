@@ -82,6 +82,11 @@ type containsAlLTypes = Assert<typeof taskOptions[number]["name"], Task["type"]>
 
 export type Test = Task[]
 
+export type Preset = {
+	name: string
+	test: Test
+}
+
 export type TestOptions = {
 	taskDelay: number
 	highlightBeforeClick: boolean
@@ -96,6 +101,7 @@ export type TaskError = {
 export type RendererState =
 	| {
 			test: Test
+			savedTests: Preset[]
 			url: string
 			submitStatus: "standby"
 			options: TestOptions
@@ -103,12 +109,14 @@ export type RendererState =
 	  }
 	| {
 			test: Test
+			savedTests: Preset[]
 			url: string
 			options: TestOptions
 			submitStatus: "submitting"
 	  }
 	| {
 			test: Test
+			savedTests: Preset[]
 			url: string
 			options: TestOptions
 			submitStatus: "running"

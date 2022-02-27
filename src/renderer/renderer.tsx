@@ -160,6 +160,7 @@ async function initRendererState(main: MainHarness): Promise<RendererState> {
 			test: [],
 			url: "",
 			submitStatus: "standby",
+			savedTests: [],
 			options: { taskDelay: 1000, highlightBeforeClick: false, typeDelay: 50 },
 		}
 	)

@@ -2,11 +2,8 @@ import {
 	Accordion,
 	ActionIcon,
 	Button,
-	Checkbox,
 	Code,
 	Divider,
-	Group,
-	NumberInput,
 	Text,
 	TextInput,
 	Title,
@@ -17,6 +14,7 @@ import { BiPlus, BiRefresh, BiTrash } from "react-icons/bi"
 import { useEnvironment } from "../Environment"
 import { useApp } from "../RendererApp"
 import { Task, taskOptions } from "../RendererState"
+import { Options } from "./Options"
 import { TaskItem } from "./TaskItem"
 
 function getSemanticName(task: Task): JSX.Element {
@@ -224,45 +222,7 @@ export function App() {
 						Clear
 					</Button>
 				</div>
-				<Accordion>
-					<Accordion.Item label="Options">
-						<Group spacing={15} direction={"column"}>
-							<NumberInput
-								label="Task delay"
-								description="Delay between each task item"
-								value={state.options.taskDelay}
-								onChange={(value) => {
-									app.dispatch.setOptions({
-										...state.options,
-										taskDelay: value || 0,
-									})
-								}}
-							/>
-							<Checkbox
-								label="Highlight before click"
-								checked={state.options.highlightBeforeClick}
-								onChange={(event) => {
-									const checked = event.currentTarget.checked
-									app.dispatch.setOptions({
-										...state.options,
-										highlightBeforeClick: checked,
-									})
-								}}
-							/>
-							<NumberInput
-								label="Type delay"
-								description="Delay between typing characters"
-								value={state.options.typeDelay}
-								onChange={(value) => {
-									app.dispatch.setOptions({
-										...state.options,
-										typeDelay: value || 0,
-									})
-								}}
-							/>
-						</Group>
-					</Accordion.Item>
-				</Accordion>
+				<Options />
 			</div>
 			<Browser />
 		</div>
