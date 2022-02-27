@@ -259,6 +259,7 @@ export function Browser() {
 				display: "flex",
 				flex: "1 1 auto",
 				flexDirection: "column",
+				backgroundColor: "#999",
 			}}
 		>
 			<div
@@ -303,6 +304,7 @@ export function Browser() {
 						display: "flex",
 						width: "100%",
 						height: "100%",
+						backgroundColor: "#fff",
 					}}
 					ref={iframeRef}
 					src={url}
