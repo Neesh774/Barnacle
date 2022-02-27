@@ -164,8 +164,17 @@ export function App() {
 											style={{
 												display: "flex",
 												alignItems: "center",
+												position: "relative",
 											}}
 										>
+											<LoadingOverlay
+												visible={
+													state.submitStatus === "running" &&
+													state.runningTaskIndex === i
+												}
+												overlayOpacity={0.8}
+												loaderProps={{ size: "sm" }}
+											/>
 											<div style={{ marginRight: "0.4rem" }}>
 												{taskSettings?.icon}
 											</div>
@@ -179,15 +188,7 @@ export function App() {
 											)}
 										</div>
 									}
-									style={{ position: "relative", borderRadius: "8px" }}
 								>
-									<LoadingOverlay
-										visible={
-											state.submitStatus === "running" &&
-											state.runningTaskIndex === i
-										}
-										overlayOpacity={0.8}
-									/>
 									<TaskItem index={i} task={task} />
 								</Accordion.Item>
 							)
@@ -198,7 +199,6 @@ export function App() {
 							app.dispatch.appendTask({ type: "clickOnElement", selector: "" })
 						}}
 						variant="outline"
-						size="xs"
 						leftIcon={<BiPlus />}
 						style={{ marginTop: "1rem" }}
 					>

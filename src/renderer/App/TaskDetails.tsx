@@ -67,7 +67,6 @@ export function TaskDetails({
 							style={{ marginLeft: "0.4rem" }}
 							color="red"
 							onClick={() => app.dispatch.removeTask(index)}
-							size="lg"
 							variant="filled"
 						>
 							<BiTrash size="24" />
@@ -101,7 +100,6 @@ export function TaskDetails({
 								width: "100%",
 								transition: "ease-in-out 0.3s",
 							}}
-							size="lg"
 							variant="light"
 							disabled={saved}
 							onClick={() => {
@@ -121,7 +119,6 @@ export function TaskDetails({
 							style={{ marginLeft: "0.4rem" }}
 							color="red"
 							onClick={() => app.dispatch.removeTask(index)}
-							size="lg"
 							variant="filled"
 						>
 							<BiTrash size="24" />
@@ -155,7 +152,6 @@ export function TaskDetails({
 								width: "100%",
 								transition: "ease-in-out 0.3s",
 							}}
-							size="lg"
 							variant="light"
 							disabled={saved}
 							onClick={() => {
@@ -175,7 +171,6 @@ export function TaskDetails({
 							style={{ marginLeft: "0.4rem" }}
 							color="red"
 							onClick={() => app.dispatch.removeTask(index)}
-							size="lg"
 							variant="filled"
 						>
 							<BiTrash size="24" />
@@ -217,7 +212,6 @@ export function TaskDetails({
 								width: "100%",
 								transition: "ease-in-out 0.3s",
 							}}
-							size="lg"
 							variant="light"
 							disabled={saved}
 							onClick={() => {
@@ -238,7 +232,6 @@ export function TaskDetails({
 							style={{ marginLeft: "0.4rem" }}
 							color="red"
 							onClick={() => app.dispatch.removeTask(index)}
-							size="lg"
 							variant="filled"
 						>
 							<BiTrash size="24" />
@@ -297,7 +290,6 @@ export function TaskDetails({
 								width: "100%",
 								transition: "ease-in-out 0.3s",
 							}}
-							size="lg"
 							variant="light"
 							disabled={saved}
 							onClick={() => {
@@ -321,7 +313,6 @@ export function TaskDetails({
 							style={{ marginLeft: "0.4rem" }}
 							color="red"
 							onClick={() => app.dispatch.removeTask(index)}
-							size="lg"
 							variant="filled"
 						>
 							<BiTrash size="24" />
@@ -369,7 +360,6 @@ export function TaskDetails({
 								width: "100%",
 								transition: "ease-in-out 0.3s",
 							}}
-							size="lg"
 							variant="light"
 							disabled={saved}
 							onClick={() => {
@@ -389,7 +379,6 @@ export function TaskDetails({
 							style={{ marginLeft: "0.4rem" }}
 							color="red"
 							onClick={() => app.dispatch.removeTask(index)}
-							size="lg"
 							variant="filled"
 						>
 							<BiTrash size="24" />
@@ -467,7 +456,6 @@ export function TaskDetails({
 							style={{ marginLeft: "0.4rem" }}
 							color="red"
 							onClick={() => app.dispatch.removeTask(index)}
-							size="lg"
 							variant="filled"
 						>
 							<BiTrash size="24" />

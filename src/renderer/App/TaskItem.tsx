@@ -53,7 +53,7 @@ export function TaskItem({ task, index }: { task: Task; index: number }) {
 							}}
 							rightIcon={<BiChevronUp />}
 							color="gray"
-							variant="light"
+							variant="default"
 							style={{ width: "50%", marginRight: "0.2rem" }}
 						>
 							Move Up
@@ -68,7 +68,7 @@ export function TaskItem({ task, index }: { task: Task; index: number }) {
 							}}
 							leftIcon={<BiChevronDown />}
 							color="gray"
-							variant="light"
+							variant="default"
 							style={{ width: "50%", marginLeft: "0.2rem" }}
 						>
 							Move Down
