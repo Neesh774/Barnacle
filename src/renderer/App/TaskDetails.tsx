@@ -2,11 +2,7 @@ import {
 	ActionIcon,
 	Button,
 	Checkbox,
-	Code,
-	ColorPicker,
 	NumberInput,
-	Switch,
-	Text,
 	TextInput,
 } from "@mantine/core"
 import * as React from "react"
@@ -30,12 +26,7 @@ export function TaskDetails({
 	const deltaXRef = React.useRef<HTMLInputElement>(null)
 	const timeoutRef = React.useRef<HTMLInputElement>(null)
 	const exactRef = React.useRef<HTMLInputElement>(null)
-	const colorRef = React.useRef<HTMLInputElement>(null)
 
-	const [colorState, setColorState] = React.useState<string | null>(null)
-	const [colorType, setColorType] = React.useState<"color" | "background">(
-		"background"
-	)
 	const [saved, setSaved] = React.useState(true)
 
 	switch (task.type) {
@@ -348,17 +339,17 @@ export function TaskDetails({
 						placeholder=".submit"
 						defaultValue={task.selector}
 						onChange={() =>
-							setSaved(selectorRef.current?.value == task.selector)
+							setSaved(selectorRef.current?.value === task.selector)
 						}
 					/>
 					<NumberInput
 						ref={timeoutRef}
 						label="Timeout"
 						placeholder="1000"
-						defaultValue={task.waitPeriod}
+						value={task.waitPeriod}
 						onChange={() =>
 							setSaved(
-								parseInt(timeoutRef.current?.value ?? "0") == task.waitPeriod
+								parseInt(timeoutRef.current?.value ?? "0") === task.waitPeriod
 							)
 						}
 						hideControls
@@ -382,8 +373,9 @@ export function TaskDetails({
 							onClick={() => {
 								app.dispatch.editTask(
 									{
-										...task,
+										type: "waitForElement",
 										selector: selectorRef.current?.value ?? "",
+										waitPeriod: parseInt(timeoutRef.current?.value ?? "0"),
 									},
 									index
 								)
@@ -458,9 +450,10 @@ export function TaskDetails({
 							onClick={() => {
 								app.dispatch.editTask(
 									{
-										...task,
+										type: "waitForElementWithText",
 										selector: selectorRef.current?.value ?? "",
 										text: textRef.current?.value ?? "",
+										waitPeriod: parseInt(timeoutRef.current?.value ?? "0"),
 									},
 									index
 								)
@@ -516,7 +509,7 @@ export function TaskDetails({
 							onClick={() => {
 								app.dispatch.editTask(
 									{
-										...task,
+										type: "sleep",
 										sleepPeriod: parseInt(timeoutRef.current?.value ?? "0"),
 									},
 									index
@@ -546,7 +539,7 @@ export function TaskDetails({
 				>
 					<TextInput
 						ref={selectorRef}
-						label="Selector"
+						label="CSS Selector"
 						placeholder="body"
 						defaultValue={task.selector}
 						onChange={() =>
@@ -562,7 +555,7 @@ export function TaskDetails({
 					/>
 					<Checkbox
 						ref={exactRef}
-						label="Exact text?"
+						label="Match the text exactly?"
 						defaultChecked={task.exact}
 						onChange={() => setSaved(exactRef.current?.checked === task.exact)}
 					/>
@@ -579,7 +572,7 @@ export function TaskDetails({
 								transition: "ease-in-out 0.3s",
 								width: "100%",
 							}}
-							variant="light"
+							variant="default"
 							disabled={saved}
 							onClick={() => {
 								app.dispatch.editTask(

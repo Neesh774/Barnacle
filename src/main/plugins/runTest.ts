@@ -1,4 +1,5 @@
 import * as nut from "@nut-tree/nut-js"
+import { strict as assert } from "assert"
 import { Task, Test, TestOptions } from "../../renderer/RendererState"
 import { enumerate } from "../../shared/enumerate"
 import { MainToRendererIPC, RendererToMainIPC } from "../../shared/ipc"
@@ -25,6 +26,7 @@ export async function runTest(
 	options: TestOptions
 ) {
 	await renderer.call.startTest()
+	let start = Date.now()
 	for (const [index, task] of enumerate(test)) {
 		try {
 			await runTask(task, renderer, windowRect, options)
@@ -35,7 +37,7 @@ export async function runTest(
 		await sleep(options.taskDelay)
 		await renderer.call.incrementTaskIndex()
 	}
-
+	const end = Date.now()
 	await renderer.call.endTest()
 }
 
@@ -139,7 +141,11 @@ async function runTask(
 		return rectOnScreen
 	}
 
-	async function measureElementWithText(cssSelector: string, text: string, exact: boolean = false) {
+	async function measureElementWithText(
+		cssSelector: string,
+		text: string,
+		exact: boolean = false
+	) {
 		const rectOnWindow = await renderer.call.measureDOMWithText(
 			cssSelector,
 			text,
@@ -207,11 +213,23 @@ async function runTask(
 		}
 	}
 
-	async function assertElementText(cssSelector: string,
-		text: string, exact: boolean = false) {
-		const rect = await measureElementWithText(cssSelector, text, exact)
-		if (!rect) {
-			throw new Error(`Element not found: ${cssSelector} with text ${text}`)
+	async function assertElementText(
+		cssSelector: string,
+		expectedText: string,
+		exact: boolean = false
+	) {
+		const actualText = await renderer.call.getElementText(cssSelector)
+		if (exact) {
+			assert.equal(
+				actualText,
+				expectedText,
+				`Expected value "${expectedText}", found value "${actualText}"`
+			)
+		} else {
+			assert.ok(
+				actualText.includes(expectedText),
+				`Actual value "${actualText}" did not contain expected value "${expectedText}", `
+			)
 		}
 	}
 	switch (task.type) {
@@ -249,9 +267,6 @@ async function runTask(
 		}
 		case "assertElementText": {
 			await assertElementText(task.selector, task.text, task.exact)
-			return true
-		}
-		default: {
 			return true
 		}
 	}

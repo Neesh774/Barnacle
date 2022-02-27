@@ -23,7 +23,7 @@ export function TaskItem({ task, index }: { task: Task; index: number }) {
 				flexDirection: "column",
 			}}
 		>
-			{state.submitStatus === "standby" &&
+			{state.submitStatus === "testDone" &&
 				state.lastError &&
 				state.lastError.index === index && (
 					<Alert
@@ -105,7 +105,7 @@ export function TaskItem({ task, index }: { task: Task; index: number }) {
 								break
 							case "waitForElement":
 								app.dispatch.editTask(
-									{ type: "waitForElement", selector: "", waitPeriod: 0 },
+									{ type: "waitForElement", selector: "", waitPeriod: 500 },
 									index
 								)
 								break

@@ -1,13 +1,12 @@
 import React from "react"
 import {
-	BiKey,
 	BiMoveVertical,
 	BiPointer,
+	BiStopCircle,
 	BiStopwatch,
 	BiText,
-	BiStopCircle,
 } from "react-icons/bi"
-import { FaRegKeyboard, FaEquals } from "react-icons/fa"
+import { FaEquals, FaRegKeyboard } from "react-icons/fa"
 import { Edge, PointDelta } from "../shared/rectHelpers"
 import { Assert } from "../shared/typeHelpers"
 
@@ -144,25 +143,32 @@ export type TaskError = {
 
 export type RendererState =
 	| {
+			submitStatus: "standby"
 			test: Test
 			savedTests: Preset[]
 			url: string
-			submitStatus: "standby"
+			options: TestOptions
+	  }
+	| {
+			submitStatus: "submitting"
+			test: Test
+			savedTests: Preset[]
+			url: string
+			options: TestOptions
+	  }
+	| {
+			submitStatus: "running"
+			test: Test
+			savedTests: Preset[]
+			url: string
+			options: TestOptions
+			runningTaskIndex: number
+	  }
+	| {
+			submitStatus: "testDone"
+			test: Test
+			savedTests: Preset[]
+			url: string
 			options: TestOptions
 			lastError?: TaskError
-	  }
-	| {
-			test: Test
-			savedTests: Preset[]
-			url: string
-			options: TestOptions
-			submitStatus: "submitting"
-	  }
-	| {
-			test: Test
-			savedTests: Preset[]
-			url: string
-			options: TestOptions
-			submitStatus: "running"
-			runningTaskIndex: number
 	  }

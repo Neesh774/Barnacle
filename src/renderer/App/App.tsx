@@ -3,9 +3,7 @@ import {
 	Button,
 	Code,
 	Divider,
-	Loader,
 	LoadingOverlay,
-	Overlay,
 	Text,
 	TextInput,
 	Title,
@@ -118,6 +116,7 @@ function getSemanticName(task: Task, color: string): JSX.Element {
 
 export function App() {
 	const state = useApp((state) => state)
+	console.log({ state })
 	const { app } = useEnvironment()
 
 	const [taskErrors, setTaskErrors] = React.useState(false)
@@ -127,7 +126,7 @@ export function App() {
 		setTaskErrors(
 			state.test.every((task) => {
 				return !Object.values(task).every((v) => {
-					return v.length > 0 || v > 0 || v == false || v == true
+					return true
 				})
 			})
 		)
@@ -166,19 +165,35 @@ export function App() {
 						multiple
 						iconPosition="right"
 						initialItem={
-							state.submitStatus === "standby" && state.lastError
+							state.submitStatus === "testDone" && state.lastError
 								? state.lastError.index
 								: -1
 						}
 					>
 						{state.test.map((task, i) => {
 							const taskSettings = taskOptions.find((t) => t.name === task.type)
+
+							const wasSuccessful =
+								state.submitStatus === "testDone" &&
+								(state.lastError ? i < state.lastError.index : true)
+
+							const wasFailed =
+								state.submitStatus === "testDone" &&
+								state.lastError &&
+								i === state.lastError.index
+
+							const color = wasSuccessful
+								? "green"
+								: wasFailed
+								? "red"
+								: "black"
+
 							return (
 								<Accordion.Item
 									className="task-accordion"
 									key={i}
 									opened={
-										state.submitStatus === "standby" &&
+										state.submitStatus === "testDone" &&
 										state.lastError &&
 										i === state.lastError.index
 									}
@@ -201,14 +216,7 @@ export function App() {
 											<div style={{ marginRight: "0.4rem" }}>
 												{taskSettings?.icon}
 											</div>
-											{getSemanticName(
-												task,
-												state.submitStatus === "standby" &&
-													state.lastError &&
-													i === state.lastError.index
-													? "red"
-													: "black"
-											)}
+											{getSemanticName(task, color)}
 										</div>
 									}
 								>
@@ -219,6 +227,7 @@ export function App() {
 					</Accordion>
 					<Button
 						onClick={() => {
+							if (app.state.submitStatus !== "standby") app.dispatch.resetTest()
 							app.dispatch.appendTask({ type: "clickOnElement", selector: "" })
 						}}
 						variant="outline"
@@ -251,6 +260,7 @@ export function App() {
 					<div style={{ flex: "1 1 auto" }} />
 					<Button
 						onClick={() => {
+							if (app.state.submitStatus !== "standby") app.dispatch.resetTest()
 							app.dispatch.clearTasks()
 						}}
 						style={{ display: "flex", transition: "ease-in-out 0.2s" }}
@@ -301,6 +311,7 @@ export function Browser() {
 					style={{ width: "100%" }}
 					value={url}
 					onChange={(event) => {
+						if (app.state.submitStatus !== "standby") app.dispatch.resetTest()
 						app.dispatch.setUrl(event.currentTarget.value || "")
 						setLoaded(false)
 					}}
