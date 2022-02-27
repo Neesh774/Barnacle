@@ -53,7 +53,7 @@ export function TaskItem({ task, index }: { task: Task; index: number }) {
 							}}
 							rightIcon={<BiChevronUp />}
 							color="gray"
-							variant="light"
+							variant="default"
 							style={{ width: "50%", marginRight: "0.2rem" }}
 						>
 							Move Up
@@ -68,7 +68,7 @@ export function TaskItem({ task, index }: { task: Task; index: number }) {
 							}}
 							leftIcon={<BiChevronDown />}
 							color="gray"
-							variant="light"
+							variant="default"
 							style={{ width: "50%", marginLeft: "0.2rem" }}
 						>
 							Move Down
@@ -123,12 +123,27 @@ export function TaskItem({ task, index }: { task: Task; index: number }) {
 							case "shortcut":
 								app.dispatch.editTask({ type: "shortcut", shortcut: "" }, index)
 								break
+							case "sleep":
+								app.dispatch.editTask({ type: "sleep", sleepPeriod: 0 }, index)
+								break
+							case "assertElementText":
+								app.dispatch.editTask(
+									{
+										type: "assertElementText",
+										text: "",
+										selector: "",
+										exact: false,
+									},
+									index
+								)
+								break
+							default:
+								break
 						}
-						console.log(e.target.value)
 						setSelectedType(taskOptions.find((t) => t.name === e.target.value))
 					}}
 					value={task.type}
-					data={taskOptions.map((o) => ({ label: o.name, value: o.name }))}
+					data={taskOptions.map((o) => ({ label: o.display, value: o.name }))}
 					placeholder="Pick a task"
 					label="Task Type"
 				/>

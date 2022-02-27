@@ -14,7 +14,7 @@ import { Environment, EnvironmentProvider } from "./Environment"
 import { TestHarnessPlugin } from "./plugins/TestHarnessPlugin"
 import { RendererApp } from "./RendererApp"
 import { RendererIPCPeer } from "./RendererIPC"
-import { TaskError } from "./RendererState"
+import { RendererState, TaskError } from "./RendererState"
 
 function setupReactApp(environment: Environment) {
 	const root = document.createElement("div")
@@ -75,14 +75,20 @@ function setupMain() {
 		return node as HTMLElement
 	}
 
-	function getElementWithText(selector: string, text: string) {
+	function getElementWithText(
+		selector: string,
+		text: string,
+		exact: boolean = false
+	) {
 		const frames = window.frames.top
 		if (!frames) {
 			throw new Error(`Frame not found`)
 		}
 		const iframe = frames[0].document
 		const nodes = Array.from(iframe.querySelectorAll(selector)) as HTMLElement[]
-		const node = nodes.find((elm) => elm.innerText.includes(text))
+		const node = nodes.find((elm) => {
+			return exact ? elm.innerText === text : elm.innerText.includes(text)
+		})
 		if (!node)
 			throw new Error(
 				`No element found for selector ${selector} containing text ${text}`
@@ -107,8 +113,8 @@ function setupMain() {
 		)
 	})
 
-	main.answer.measureDOMWithText((selector, text) => {
-		const node = getElementWithText(selector, text)
+	main.answer.measureDOMWithText((selector, text, exact) => {
+		const node = getElementWithText(selector, text, exact)
 		const { top, left, width, height } = node.getBoundingClientRect()
 
 		const iframeElm = document.getElementById("iframe")
@@ -143,18 +149,35 @@ function setupMainActions(main: MainHarness, app: RendererApp) {
 	main.answer.endTest((error?: TaskError) => {
 		app.dispatch.endTest(error)
 	})
+
+	main.answer.systemRefresh(async () => {
+		await main.call.saveState(app.state)
+	})
+
+	window.addEventListener("beforeunload", async () => {
+		await main.call.saveState(app.state)
+	})
+}
+
+async function initRendererState(main: MainHarness): Promise<RendererState> {
+	const initState = await main.call.loadState()
+	return (
+		initState || {
+			test: [],
+			url: "",
+			submitStatus: "standby",
+			savedTests: [],
+			options: { taskDelay: 1000, highlightBeforeClick: false, typeDelay: 50 },
+		}
+	)
 }
 
 async function main() {
 	const main = setupMain()
-	const app = new RendererApp(
-		{
-			test: [],
-			submitStatus: "standby",
-			options: { delay: 1000, highlightBeforeClick: false },
-		},
-		[TestHarnessPlugin(main)]
-	)
+
+	const state = await initRendererState(main)
+
+	const app = new RendererApp(state, [TestHarnessPlugin(main)])
 	setupMainActions(main, app)
 
 	const environment: Environment = {

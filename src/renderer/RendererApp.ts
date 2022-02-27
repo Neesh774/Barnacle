@@ -6,7 +6,7 @@ import {
 } from "../StateMachine"
 import { useEnvironment } from "./Environment"
 import { useStateMachine } from "./hooks/useStateMachine"
-import { RendererState, Task, TaskError, TestOptions } from "./RendererState"
+import { Preset, RendererState, Task, TaskError, TestOptions } from "./RendererState"
 
 function appendTask(state: RendererState, task: Task): RendererState {
 	return {
@@ -22,7 +22,6 @@ function editTask(
 ): RendererState {
 	const newTasks = [...state.test]
 	newTasks[index] = newTask
-	console.log(newTasks)
 	state.submitStatus === "standby" &&
 		state.lastError &&
 		state.lastError.index == index
@@ -35,6 +34,10 @@ function editTask(
 }
 
 function setTasks(state: RendererState, tasks: Task[]): RendererState {
+	state.submitStatus === "standby" &&
+		state.lastError
+		? (state.lastError = undefined)
+		: ""
 	return { ...state, test: tasks }
 }
 
@@ -44,7 +47,11 @@ function clearTasks(state: RendererState): RendererState {
 
 function removeTask(state: RendererState, index: number): RendererState {
 	const newTasks = state.test.filter((_, i) => i !== index)
-	console.log(newTasks, index)
+	state.submitStatus === "standby" &&
+		state.lastError &&
+		state.lastError.index == index
+		? (state.lastError = undefined)
+		: ""
 	return {
 		...state,
 		test: newTasks,
@@ -52,6 +59,10 @@ function removeTask(state: RendererState, index: number): RendererState {
 }
 
 function startSubmittingTest(state: RendererState): RendererState {
+	state.submitStatus === "standby" &&
+		state.lastError
+		? (state.lastError = undefined)
+		: ""
 	return { ...state, submitStatus: "submitting" }
 }
 
@@ -83,6 +94,18 @@ function setOptions(state: RendererState, options: TestOptions): RendererState {
 	return { ...state, options }
 }
 
+function setUrl(state: RendererState, url: string): RendererState {
+	return { ...state, url }
+}
+
+function addSavedTest(state: RendererState, save: Preset): RendererState {
+	return { ...state, savedTests: [...state.savedTests, save] }
+}
+function deleteSavedTest(state: RendererState, index: number): RendererState {
+	const newTests = state.savedTests.filter((_, i) => i !== index)
+	return { ...state, savedTests: newTests }
+}
+
 const rendererReducers = {
 	appendTask,
 	removeTask,
@@ -91,6 +114,7 @@ const rendererReducers = {
 	setTasks,
 
 	setOptions,
+	setUrl,
 
 	startSubmittingTest,
 	cancelSubmittingTest,
@@ -98,6 +122,9 @@ const rendererReducers = {
 	startTest,
 	incrementRunningIndex,
 	endTest,
+
+	addSavedTest,
+	deleteSavedTest,
 }
 
 export type RendererAction = Actions<typeof rendererReducers>

@@ -1,81 +1,115 @@
 import {
 	Accordion,
-	ActionIcon,
 	Button,
-	Checkbox,
 	Code,
 	Divider,
-	Group,
-	NumberInput,
+	Loader,
+	LoadingOverlay,
+	Overlay,
 	Text,
 	TextInput,
-	ThemeIcon,
 	Title,
-	useAccordionState,
 } from "@mantine/core"
 import * as React from "react"
-import {
-	BiPlus,
-	BiTrash,
-	BiChevronUp,
-	BiChevronDown,
-	BiRefresh,
-} from "react-icons/bi"
+import { BiPlus, BiTrash } from "react-icons/bi"
 import { useEnvironment } from "../Environment"
 import { useApp } from "../RendererApp"
 import { Task, taskOptions } from "../RendererState"
+import { Options } from "./Options"
 import { TaskItem } from "./TaskItem"
 
-function getSemanticName(task: Task): JSX.Element {
+function getSemanticName(task: Task, color: string): JSX.Element {
 	switch (task.type) {
 		case "clickOnElement": {
 			return (
-				<Text size="md">
-					Click on element <Code>{task.selector}</Code>
+				<Text color={color} size="md">
+					Click on element{" "}
+					<Code>{task.selector.length > 0 ? task.selector : ""}</Code>
 				</Text>
 			)
 		}
 		case "clickOnElementWithText": {
 			return (
-				<Text size="md">
-					Click on element <Code>{task.selector}</Code> with text{" "}
-					<Code>{task.text}</Code>
+				<Text color={color} size="md">
+					Click on element
+					{task.selector.length > 0 ? (
+						<Code>{" " + task.selector + " "}</Code>
+					) : (
+						" "
+					)}
+					with text <Code>{task.text}</Code>
 				</Text>
 			)
 		}
 		case "typeText": {
 			return (
-				<Text size="md">
-					Type <Code>{task.text}</Code>
+				<Text color={color} size="md">
+					Type<Code> {" " + task.text}</Code>
 				</Text>
 			)
 		}
 		case "shortcut": {
 			return (
-				<Text size="md">
-					Keyboard shortcut <Code>{task.shortcut}</Code>
+				<Text color={color} size="md">
+					Keyboard shortcut<Code> {" " + task.shortcut}</Code>
 				</Text>
 			)
 		}
 		case "scrollElement": {
 			return (
-				<Text size="md">
-					Scroll element <Code>{task.selector}</Code>
+				<Text color={color} size="md">
+					Scroll element<Code> {" " + task.selector}</Code>
 				</Text>
 			)
 		}
 		case "waitForElement": {
 			return (
-				<Text size="md">
-					Wait for element <Code>{task.selector}</Code> to appear
+				<Text color={color} size="md">
+					Wait for element
+					{task.selector.length > 0 ? (
+						<Code>{" " + task.selector + " "}</Code>
+					) : (
+						" "
+					)}
+					to appear
 				</Text>
 			)
 		}
 		case "waitForElementWithText": {
 			return (
-				<Text size="md">
-					Wait for element <Code>{task.selector}</Code> with text{" "}
-					<Code>{task.text}</Code> to appear
+				<Text color={color} size="md">
+					Wait for element
+					{task.selector.length > 0 ? (
+						<Code>{" " + task.selector + " "}</Code>
+					) : (
+						" "
+					)}
+					with text{" "}
+					{task.text.length > 0 ? <Code>{" " + task.text + " "}</Code> : " "} to
+					appear
+				</Text>
+			)
+		}
+		case "sleep": {
+			return (
+				<Text color={color} size="md">
+					Sleep for <Code>{task.sleepPeriod}</Code> ms
+				</Text>
+			)
+		}
+		case "assertElementText": {
+			return (
+				<Text color={color} size="md">
+					Assert element{" "}
+					{task.selector.length > 0 && <Code>{task.selector}</Code>} text ={" "}
+					{task.text.length > 0 && <Code>{task.text}</Code>}
+				</Text>
+			)
+		}
+		default: {
+			return (
+				<Text color={color} size="md">
+					Unknown Task
 				</Text>
 			)
 		}
@@ -88,25 +122,15 @@ export function App() {
 
 	const [taskErrors, setTaskErrors] = React.useState(false)
 	const siteInput = React.useRef<HTMLInputElement | null>(null)
-	const [accState, handlers] = useAccordionState({
-		total: state.test.length,
-		initialItem:
-			state.submitStatus === "standby" && state.lastError
-				? state.lastError.index
-				: -1,
-	})
 
 	React.useEffect(() => {
 		setTaskErrors(
 			state.test.every((task) => {
 				return !Object.values(task).every((v) => {
-					return v.length > 0
+					return v.length > 0 || v > 0 || v == false || v == true
 				})
 			})
 		)
-		if (state.submitStatus === "standby" && state.lastError) {
-			handlers.toggle(state.lastError.index)
-		}
 	}, [taskErrors, state])
 
 	return (
@@ -116,16 +140,19 @@ export function App() {
 				style={{
 					width: "30%",
 					borderRight: "1px solid #aaa",
-					padding: "2rem 0 0",
+					padding: "0.3rem 0 0",
 					height: "100%",
 					display: "flex",
 					flexDirection: "column",
 					justifyContent: "space-between",
 				}}
 			>
+				<Title order={1} style={{ padding: "0 1rem" }}>
+					Barnacle
+				</Title>
 				<div
 					style={{
-						overflowY: "auto",
+						overflowY: "scroll",
 						height: "100%",
 						padding: "0 1rem",
 						paddingBottom: "1rem",
@@ -136,27 +163,54 @@ export function App() {
 						Tasks
 					</Title>
 					<Accordion
-						disableIconRotation
 						multiple
-						state={accState}
-						onChange={handlers.setState}
+						iconPosition="right"
+						initialItem={
+							state.submitStatus === "standby" && state.lastError
+								? state.lastError.index
+								: -1
+						}
 					>
 						{state.test.map((task, i) => {
 							const taskSettings = taskOptions.find((t) => t.name === task.type)
 							return (
 								<Accordion.Item
+									className="task-accordion"
 									key={i}
+									opened={
+										state.submitStatus === "standby" &&
+										state.lastError &&
+										i === state.lastError.index
+									}
 									label={
 										<div
 											style={{
 												display: "flex",
 												alignItems: "center",
+												position: "relative",
 											}}
 										>
-											{getSemanticName(task)}
+											<LoadingOverlay
+												visible={
+													state.submitStatus === "running" &&
+													state.runningTaskIndex === i
+												}
+												overlayOpacity={0.8}
+												loaderProps={{ size: "sm" }}
+											/>
+											<div style={{ marginRight: "0.4rem" }}>
+												{taskSettings?.icon}
+											</div>
+											{getSemanticName(
+												task,
+												state.submitStatus === "standby" &&
+													state.lastError &&
+													i === state.lastError.index
+													? "red"
+													: "black"
+											)}
 										</div>
 									}
-									icon={taskSettings?.icon}
 								>
 									<TaskItem index={i} task={task} />
 								</Accordion.Item>
@@ -168,7 +222,6 @@ export function App() {
 							app.dispatch.appendTask({ type: "clickOnElement", selector: "" })
 						}}
 						variant="outline"
-						size="xs"
 						leftIcon={<BiPlus />}
 						style={{ marginTop: "1rem" }}
 					>
@@ -188,12 +241,12 @@ export function App() {
 						onClick={() => {
 							app.dispatch.startSubmittingTest()
 						}}
-						disabled={taskErrors}
+						disabled={taskErrors || state.submitStatus === "running"}
 						style={{ transition: "ease-in-out 0.2s" }}
 						loading={state.submitStatus === "submitting"}
 						size="sm"
 					>
-						Submit
+						{state.submitStatus === "running" ? "Running" : "Submit"}
 					</Button>
 					<div style={{ flex: "1 1 auto" }} />
 					<Button
@@ -209,34 +262,7 @@ export function App() {
 						Clear
 					</Button>
 				</div>
-				<Accordion>
-					<Accordion.Item label="Options">
-						<Group spacing={15} direction={"column"}>
-							<NumberInput
-								label="Task delay"
-								description="Delay between each task item"
-								value={state.options.delay}
-								onChange={(value) => {
-									app.dispatch.setOptions({
-										...state.options,
-										delay: value || 0,
-									})
-								}}
-							/>
-							<Checkbox
-								label="Highlight before click"
-								checked={state.options.highlightBeforeClick}
-								onChange={(event) => {
-									const checked = event.currentTarget.checked
-									app.dispatch.setOptions({
-										...state.options,
-										highlightBeforeClick: checked,
-									})
-								}}
-							/>
-						</Group>
-					</Accordion.Item>
-				</Accordion>
+				<Options />
 			</div>
 			<Browser />
 		</div>
@@ -244,9 +270,10 @@ export function App() {
 }
 
 export function Browser() {
-	const [testSite, setTestSite] = React.useState("")
+	const { app } = useEnvironment()
+	const url = useApp((state) => state.url)
+	const [loaded, setLoaded] = React.useState(true)
 	const iframeRef = React.useRef<HTMLIFrameElement>(null)
-	const siteInput = React.useRef<HTMLInputElement | null>(null)
 
 	return (
 		<div
@@ -255,6 +282,7 @@ export function Browser() {
 				display: "flex",
 				flex: "1 1 auto",
 				flexDirection: "column",
+				backgroundColor: "#999",
 			}}
 		>
 			<div
@@ -267,43 +295,42 @@ export function Browser() {
 				}}
 			>
 				<TextInput
-					ref={siteInput}
 					placeholder="https://example.org"
 					type="url"
 					size="xs"
 					style={{ width: "100%" }}
+					value={url}
+					onChange={(event) => {
+						app.dispatch.setUrl(event.currentTarget.value || "")
+						setLoaded(false)
+					}}
+					onKeyUp={(event) => {
+						if (event.key === "Enter") {
+							setLoaded(true)
+						}
+					}}
 				/>
 				<Button
 					style={{ marginLeft: "0.2rem" }}
-					onClick={(e: React.MouseEvent) =>
-						setTestSite(siteInput.current ? siteInput.current.value : "")
-					}
+					onClick={() => {
+						setLoaded(true)
+					}}
 					size="xs"
 				>
 					Load
 				</Button>
-				<ActionIcon
-					onClick={() =>
-						iframeRef.current ? (iframeRef.current.src = testSite || "") : null
-					}
-					size="md"
-					variant="filled"
-					color="blue"
-					style={{ marginLeft: "0.2rem" }}
-				>
-					<BiRefresh size={20} />
-				</ActionIcon>
 			</div>
-			{testSite ? (
+			{loaded && url !== "" ? (
 				<iframe
 					id="iframe"
 					style={{
 						display: "flex",
 						width: "100%",
 						height: "100%",
+						backgroundColor: "#fff",
 					}}
 					ref={iframeRef}
-					src={testSite}
+					src={url}
 				/>
 			) : (
 				<div

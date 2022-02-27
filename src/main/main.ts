@@ -1,5 +1,6 @@
 import { app, BrowserWindow } from "electron"
 import { TestHarness } from "../test/TestHarness"
+import { tmpDir } from "../tools/tmpDir"
 import { Config } from "./Config"
 import { MainApp } from "./MainApp"
 import { MainEnvironment } from "./MainEnvironment"
@@ -8,7 +9,7 @@ import { SystemMenuPlugin } from "./plugins/SystemMenuPlugin"
 
 function setupConfig(): Config {
 	const test = process.argv.slice(2).indexOf("--test") !== -1
-	return { test }
+	return { test, partition: tmpDir() }
 }
 
 /**

@@ -15,6 +15,7 @@ import { MainEnvironment } from "../MainEnvironment"
 import { MainIPCPeer } from "../MainIPC"
 import { MainState, WindowState } from "../MainState"
 import { runTest } from "./runTest"
+import { loadState, saveState } from "./saveState"
 
 export const AppWindowPlugin =
 	(environment: Omit<MainEnvironment, "app">): MainAppPlugin =>
@@ -91,6 +92,16 @@ class AppWindow {
 		this.ipc.answer.runTest(async (test, options) => {
 			const { x, y, height, width } = this.browserWindow.getContentBounds()
 			runTest(test, this.ipc, { top: y, left: x, height, width }, options)
+		})
+
+		const partition = environment.config.partition
+
+		this.ipc.answer.saveState(async (rendererState) => {
+			await saveState(partition, rendererState)
+		})
+
+		this.ipc.answer.loadState(async () => {
+			return await loadState(partition)
 		})
 	}
 
