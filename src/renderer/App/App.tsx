@@ -1,6 +1,5 @@
 import {
 	Accordion,
-	ActionIcon,
 	Button,
 	Code,
 	Divider,
@@ -12,7 +11,7 @@ import {
 	Title,
 } from "@mantine/core"
 import * as React from "react"
-import { BiPlus, BiRefresh, BiTrash } from "react-icons/bi"
+import { BiPlus, BiTrash } from "react-icons/bi"
 import { useEnvironment } from "../Environment"
 import { useApp } from "../RendererApp"
 import { Task, taskOptions } from "../RendererState"
@@ -250,7 +249,6 @@ export function App() {
 export function Browser() {
 	const { app } = useEnvironment()
 	const url = useApp((state) => state.url)
-	console.log({ url })
 	const [loaded, setLoaded] = React.useState(true)
 	const iframeRef = React.useRef<HTMLIFrameElement>(null)
 
@@ -282,33 +280,21 @@ export function Browser() {
 						app.dispatch.setUrl(event.currentTarget.value || "")
 						setLoaded(false)
 					}}
+					onKeyUp={(event) => {
+						if (event.key === "Enter") {
+							setLoaded(true)
+						}
+					}}
 				/>
 				<Button
 					style={{ marginLeft: "0.2rem" }}
 					onClick={() => {
-						const iframe = iframeRef.current
-						if (!iframe) return
-						iframe.src = url
 						setLoaded(true)
 					}}
 					size="xs"
 				>
 					Load
 				</Button>
-				<ActionIcon
-					onClick={() => {
-						const iframe = iframeRef.current
-						if (!iframe) return
-						iframe.src = url
-						setLoaded(true)
-					}}
-					size="md"
-					variant="filled"
-					color="blue"
-					style={{ marginLeft: "0.2rem" }}
-				>
-					<BiRefresh size={20} />
-				</ActionIcon>
 			</div>
 			{loaded && url !== "" ? (
 				<iframe
