@@ -144,7 +144,7 @@ export function TaskItem({ task, index }: { task: Task; index: number }) {
 						setSelectedType(taskOptions.find((t) => t.name === e.target.value))
 					}}
 					value={task.type}
-					data={taskOptions.map((o) => ({ label: o.name, value: o.name }))}
+					data={taskOptions.map((o) => ({ label: o.display, value: o.name }))}
 					placeholder="Pick a task"
 					label="Task Type"
 				/>
