@@ -49,15 +49,6 @@ export const SystemMenuPlugin: MainAppPlugin = (mainApp) => {
 
 		const menu = Menu.buildFromTemplate([
 			{
-				label: app.name,
-				submenu: [
-					{ role: "about" },
-					{ role: "toggleDevTools" },
-					{ type: "separator" },
-					{ role: "quit" },
-				],
-			},
-			{
 				label: "File",
 				submenu: [{ role: "close" }],
 			},
@@ -75,20 +66,6 @@ export const SystemMenuPlugin: MainAppPlugin = (mainApp) => {
 						accelerator: "CmdOrCtrl+A",
 						role: "selectAll",
 					},
-				],
-			},
-
-			{
-				label: "Dispatch",
-				submenu: [
-					{
-						label: "New Window",
-						accelerator: "CommandOrControl+N",
-						click() {
-							mainApp.dispatch.newWindow()
-						},
-					},
-					...flatten(items),
 				],
 			},
 			{
@@ -114,6 +91,6 @@ export const SystemMenuPlugin: MainAppPlugin = (mainApp) => {
 		update() {
 			render()
 		},
-		destroy() {},
+		destroy() { },
 	}
 }

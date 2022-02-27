@@ -30,7 +30,7 @@ export function TaskDetails({
 						label="CSS Selector"
 						ref={selectorRef}
 						placeholder=".submit"
-						error={selectorRef.current?.value === ""}
+						defaultValue={task.selector}
 						onChange={() =>
 							setSaved(selectorRef.current?.value == task.selector)
 						}
@@ -64,7 +64,7 @@ export function TaskDetails({
 							Save
 						</Button>
 						<ActionIcon
-							style={{ zIndex: 1000, marginLeft: "0.4rem" }}
+							style={{ marginLeft: "0.4rem" }}
 							color="red"
 							onClick={() => app.dispatch.removeTask(index)}
 							size="lg"
@@ -83,10 +83,10 @@ export function TaskDetails({
 						ref={textRef}
 						label="Text"
 						placeholder="Lorem ipsum"
+						defaultValue={task.text}
 						onChange={() => {
 							return setSaved(textRef.current?.value === task.text)
 						}}
-						error={textRef.current?.value === ""}
 					/>
 					<div
 						style={{
@@ -118,7 +118,7 @@ export function TaskDetails({
 							Save
 						</Button>
 						<ActionIcon
-							style={{ zIndex: 1000, marginLeft: "0.4rem" }}
+							style={{ marginLeft: "0.4rem" }}
 							color="red"
 							onClick={() => app.dispatch.removeTask(index)}
 							size="lg"
@@ -137,10 +137,10 @@ export function TaskDetails({
 						ref={textRef}
 						label="Text"
 						placeholder="cmd-t"
+						defaultValue={task.shortcut}
 						onChange={() => {
 							return setSaved(textRef.current?.value === task.shortcut)
 						}}
-						error={textRef.current?.value === ""}
 					/>
 					<div
 						style={{
@@ -172,7 +172,7 @@ export function TaskDetails({
 							Save
 						</Button>
 						<ActionIcon
-							style={{ zIndex: 1000, marginLeft: "0.4rem" }}
+							style={{ marginLeft: "0.4rem" }}
 							color="red"
 							onClick={() => app.dispatch.removeTask(index)}
 							size="lg"
@@ -191,18 +191,18 @@ export function TaskDetails({
 						ref={selectorRef}
 						label="CSS Selector"
 						placeholder=".submit"
+						defaultValue={task.selector}
 						onChange={() =>
 							setSaved(selectorRef.current?.value == task.selector)
 						}
-						error={selectorRef.current?.value === ""}
 					/>
 					<TextInput
 						required
 						ref={textRef}
 						label="Text"
 						placeholder="Lorem ipsum"
+						defaultValue={task.text}
 						onChange={() => setSaved(textRef.current?.value == task.text)}
-						error={textRef.current?.value === ""}
 					/>
 					<div
 						style={{
@@ -235,7 +235,7 @@ export function TaskDetails({
 							Save
 						</Button>
 						<ActionIcon
-							style={{ zIndex: 1000, marginLeft: "0.4rem" }}
+							style={{ marginLeft: "0.4rem" }}
 							color="red"
 							onClick={() => app.dispatch.removeTask(index)}
 							size="lg"
@@ -255,10 +255,10 @@ export function TaskDetails({
 						ref={selectorRef}
 						label="CSS Selector"
 						placeholder=".submit"
+						defaultValue={task.selector}
 						onChange={() =>
 							setSaved(selectorRef.current?.value == task.selector)
 						}
-						error={selectorRef.current?.value === ""}
 					/>
 					<div style={{ display: "flex", alignItems: "center" }}>
 						<NumberInput
@@ -268,7 +268,7 @@ export function TaskDetails({
 							onChange={() =>
 								setSaved(deltaYRef.current?.value == task.delta.y)
 							}
-							error={deltaYRef.current?.value === ""}
+							defaultValue={task.delta.y}
 							hideControls
 							style={{ marginRight: "0.1rem" }}
 						/>
@@ -278,10 +278,10 @@ export function TaskDetails({
 							ref={deltaXRef}
 							label="Delta X"
 							placeholder="100"
+							defaultValue={task.delta.x}
 							onChange={() =>
 								setSaved(deltaXRef.current?.value == task.delta.x)
 							}
-							error={deltaXRef.current?.value === ""}
 						/>
 					</div>
 					<div
@@ -318,7 +318,7 @@ export function TaskDetails({
 							Save
 						</Button>
 						<ActionIcon
-							style={{ zIndex: 1000, marginLeft: "0.4rem" }}
+							style={{ marginLeft: "0.4rem" }}
 							color="red"
 							onClick={() => app.dispatch.removeTask(index)}
 							size="lg"
@@ -338,21 +338,21 @@ export function TaskDetails({
 						ref={selectorRef}
 						label="CSS Selector"
 						placeholder=".submit"
+						defaultValue={task.selector}
 						onChange={() =>
 							setSaved(selectorRef.current?.value == task.selector)
 						}
-						error={selectorRef.current?.value === ""}
 					/>
 					<NumberInput
 						ref={timeoutRef}
 						label="Timeout"
 						placeholder="1000"
+						defaultValue={task.waitPeriod}
 						onChange={() =>
 							setSaved(
 								parseInt(timeoutRef.current?.value ?? "0") == task.waitPeriod
 							)
 						}
-						error={timeoutRef.current?.value === ""}
 						hideControls
 						style={{ marginRight: "0.1rem" }}
 					/>
@@ -386,7 +386,7 @@ export function TaskDetails({
 							Save
 						</Button>
 						<ActionIcon
-							style={{ zIndex: 1000, marginLeft: "0.4rem" }}
+							style={{ marginLeft: "0.4rem" }}
 							color="red"
 							onClick={() => app.dispatch.removeTask(index)}
 							size="lg"
@@ -406,6 +406,7 @@ export function TaskDetails({
 						ref={selectorRef}
 						label="CSS Selector"
 						placeholder=".submit"
+						defaultValue={task.selector}
 						onChange={() =>
 							setSaved(selectorRef.current?.value == task.selector)
 						}
@@ -416,13 +417,14 @@ export function TaskDetails({
 						ref={textRef}
 						label="Text"
 						placeholder="Submit"
+						defaultValue={task.text}
 						onChange={() => setSaved(textRef.current?.value == task.text)}
-						error={textRef.current?.value === ""}
 					/>
 					<NumberInput
 						ref={timeoutRef}
 						label="Timeout"
 						placeholder="1000"
+						defaultValue={task.waitPeriod}
 						onChange={() =>
 							setSaved(
 								parseInt(timeoutRef.current?.value ?? "0") == task.waitPeriod
@@ -462,7 +464,7 @@ export function TaskDetails({
 							Save
 						</Button>
 						<ActionIcon
-							style={{ zIndex: 1000, marginLeft: "0.4rem" }}
+							style={{ marginLeft: "0.4rem" }}
 							color="red"
 							onClick={() => app.dispatch.removeTask(index)}
 							size="lg"

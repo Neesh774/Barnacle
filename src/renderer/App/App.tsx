@@ -4,10 +4,12 @@ import {
 	Button,
 	Code,
 	Divider,
+	Loader,
+	LoadingOverlay,
+	Overlay,
 	Text,
 	TextInput,
 	Title,
-	useAccordionState,
 } from "@mantine/core"
 import * as React from "react"
 import { BiPlus, BiRefresh, BiTrash } from "react-icons/bi"
@@ -17,11 +19,11 @@ import { Task, taskOptions } from "../RendererState"
 import { Options } from "./Options"
 import { TaskItem } from "./TaskItem"
 
-function getSemanticName(task: Task): JSX.Element {
+function getSemanticName(task: Task, color: string): JSX.Element {
 	switch (task.type) {
 		case "clickOnElement": {
 			return (
-				<Text size="md">
+				<Text color={color} size="md">
 					Click on element{" "}
 					<Code>{task.selector.length > 0 ? task.selector : ""}</Code>
 				</Text>
@@ -29,7 +31,7 @@ function getSemanticName(task: Task): JSX.Element {
 		}
 		case "clickOnElementWithText": {
 			return (
-				<Text size="md">
+				<Text color={color} size="md">
 					Click on element
 					{task.selector.length > 0 ? (
 						<Code>{" " + task.selector + " "}</Code>
@@ -42,28 +44,28 @@ function getSemanticName(task: Task): JSX.Element {
 		}
 		case "typeText": {
 			return (
-				<Text size="md">
+				<Text color={color} size="md">
 					Type<Code> {" " + task.text}</Code>
 				</Text>
 			)
 		}
 		case "shortcut": {
 			return (
-				<Text size="md">
+				<Text color={color} size="md">
 					Keyboard shortcut<Code> {" " + task.shortcut}</Code>
 				</Text>
 			)
 		}
 		case "scrollElement": {
 			return (
-				<Text size="md">
+				<Text color={color} size="md">
 					Scroll element<Code> {" " + task.selector}</Code>
 				</Text>
 			)
 		}
 		case "waitForElement": {
 			return (
-				<Text size="md">
+				<Text color={color} size="md">
 					Wait for element
 					{task.selector.length > 0 ? (
 						<Code>{" " + task.selector + " "}</Code>
@@ -76,7 +78,7 @@ function getSemanticName(task: Task): JSX.Element {
 		}
 		case "waitForElementWithText": {
 			return (
-				<Text size="md">
+				<Text color={color} size="md">
 					Wait for element
 					{task.selector.length > 0 ? (
 						<Code>{" " + task.selector + " "}</Code>
@@ -98,13 +100,6 @@ export function App() {
 
 	const [taskErrors, setTaskErrors] = React.useState(false)
 	const siteInput = React.useRef<HTMLInputElement | null>(null)
-	const [accState, handlers] = useAccordionState({
-		total: state.test.length,
-		initialItem:
-			state.submitStatus === "standby" && state.lastError
-				? state.lastError.index
-				: -1,
-	})
 
 	React.useEffect(() => {
 		setTaskErrors(
@@ -114,9 +109,6 @@ export function App() {
 				})
 			})
 		)
-		if (state.submitStatus === "standby" && state.lastError) {
-			handlers.toggle(state.lastError.index)
-		}
 	}, [taskErrors, state])
 
 	return (
@@ -126,16 +118,19 @@ export function App() {
 				style={{
 					width: "30%",
 					borderRight: "1px solid #aaa",
-					padding: "2rem 0 0",
+					padding: "0.3rem 0 0",
 					height: "100%",
 					display: "flex",
 					flexDirection: "column",
 					justifyContent: "space-between",
 				}}
 			>
+				<Title order={1} style={{ padding: "0 1rem" }}>
+					Sitester
+				</Title>
 				<div
 					style={{
-						overflowY: "auto",
+						overflowY: "scroll",
 						height: "100%",
 						padding: "0 1rem",
 						paddingBottom: "1rem",
@@ -147,9 +142,12 @@ export function App() {
 					</Title>
 					<Accordion
 						multiple
-						state={accState}
-						onChange={handlers.setState}
 						iconPosition="right"
+						initialItem={
+							state.submitStatus === "standby" && state.lastError
+								? state.lastError.index
+								: -1
+						}
 					>
 						{state.test.map((task, i) => {
 							const taskSettings = taskOptions.find((t) => t.name === task.type)
@@ -157,6 +155,11 @@ export function App() {
 								<Accordion.Item
 									className="task-accordion"
 									key={i}
+									opened={
+										state.submitStatus === "standby" &&
+										state.lastError &&
+										i === state.lastError.index
+									}
 									label={
 										<div
 											style={{
@@ -167,10 +170,25 @@ export function App() {
 											<div style={{ marginRight: "0.4rem" }}>
 												{taskSettings?.icon}
 											</div>
-											{getSemanticName(task)}
+											{getSemanticName(
+												task,
+												state.submitStatus === "standby" &&
+													state.lastError &&
+													i === state.lastError.index
+													? "red"
+													: "black"
+											)}
 										</div>
 									}
+									style={{ position: "relative", borderRadius: "8px" }}
 								>
+									<LoadingOverlay
+										visible={
+											state.submitStatus === "running" &&
+											state.runningTaskIndex === i
+										}
+										overlayOpacity={0.8}
+									/>
 									<TaskItem index={i} task={task} />
 								</Accordion.Item>
 							)
@@ -201,12 +219,12 @@ export function App() {
 						onClick={() => {
 							app.dispatch.startSubmittingTest()
 						}}
-						disabled={taskErrors}
+						disabled={taskErrors || state.submitStatus === "running"}
 						style={{ transition: "ease-in-out 0.2s" }}
 						loading={state.submitStatus === "submitting"}
 						size="sm"
 					>
-						Submit
+						{state.submitStatus === "running" ? "Running" : "Submit"}
 					</Button>
 					<div style={{ flex: "1 1 auto" }} />
 					<Button

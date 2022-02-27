@@ -35,6 +35,10 @@ function editTask(
 }
 
 function setTasks(state: RendererState, tasks: Task[]): RendererState {
+	state.submitStatus === "standby" &&
+		state.lastError
+		? (state.lastError = undefined)
+		: ""
 	return { ...state, test: tasks }
 }
 
@@ -45,6 +49,11 @@ function clearTasks(state: RendererState): RendererState {
 function removeTask(state: RendererState, index: number): RendererState {
 	const newTasks = state.test.filter((_, i) => i !== index)
 	console.log(newTasks, index)
+	state.submitStatus === "standby" &&
+		state.lastError &&
+		state.lastError.index == index
+		? (state.lastError = undefined)
+		: ""
 	return {
 		...state,
 		test: newTasks,
@@ -52,6 +61,10 @@ function removeTask(state: RendererState, index: number): RendererState {
 }
 
 function startSubmittingTest(state: RendererState): RendererState {
+	state.submitStatus === "standby" &&
+		state.lastError
+		? (state.lastError = undefined)
+		: ""
 	return { ...state, submitStatus: "submitting" }
 }
 

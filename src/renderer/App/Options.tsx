@@ -68,13 +68,13 @@ export function Options() {
 							<SavedTest index={i} test={test} />
 						))
 					)}
-					<Title order={5}>Save</Title>
+					<Title order={5}>Save New Test</Title>
 					<Group direction="row" align="flex-end">
 						<TextInput ref={newSaveRef} label="Name" size="sm" />
 						<ActionIcon
 							size="xl"
 							onClick={() => {
-								if (!newSaveRef.current || newSaveRef.current.value.length < 0)
+								if (!newSaveRef.current || newSaveRef.current.value.length < 1)
 									return
 								const save: Preset = {
 									name: newSaveRef.current.value,

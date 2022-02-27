@@ -1,5 +1,5 @@
 {
-	"name": "barnacle",
+	"name": "sitester",
 	"version": "1.0.0",
 	"description": "A end-to-end testing service.",
 	"scripts": {
@@ -9,7 +9,7 @@
 		"lint": "eslint -c .eslintrc --ext .ts ./src",
 		"start": "electron ./build/main/main.js --disable-gpu"
 	},
-	"repository": "https://github.com/Neesh774/Barnacle",
+	"repository": "https://github.com/Neesh774/Sitester",
 	"keywords": [
 		"Electron",
 		"quick",
