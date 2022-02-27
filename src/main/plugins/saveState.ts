@@ -3,7 +3,6 @@ import * as path from "path"
 import { RendererState } from "../../renderer/RendererState"
 
 export async function saveState(partition: string, state: RendererState) {
-	console.log(path.join(partition, "state.json"))
 	try {
 		await fs.ensureFile(path.join(partition, "state.json"))
 		await fs.writeJSON(path.join(partition, "state.json"), state)
