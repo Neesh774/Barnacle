@@ -90,6 +90,29 @@ function getSemanticName(task: Task, color: string): JSX.Element {
 				</Text>
 			)
 		}
+		case "sleep": {
+			return (
+				<Text color={color} size="md">
+					Sleep for <Code>{task.sleepPeriod}</Code> ms
+				</Text>
+			)
+		}
+		case "assertElementText": {
+			return (
+				<Text color={color} size="md">
+					Assert element{" "}
+					{task.selector.length > 0 && <Code>{task.selector}</Code>} text ={" "}
+					{task.text.length > 0 && <Code>{task.text}</Code>}
+				</Text>
+			)
+		}
+		default: {
+			return (
+				<Text color={color} size="md">
+					Unknown Task
+				</Text>
+			)
+		}
 	}
 }
 
@@ -104,7 +127,7 @@ export function App() {
 		setTaskErrors(
 			state.test.every((task) => {
 				return !Object.values(task).every((v) => {
-					return v.length > 0
+					return v.length > 0 || v > 0 || v == false || v == true
 				})
 			})
 		)
@@ -125,7 +148,7 @@ export function App() {
 				}}
 			>
 				<Title order={1} style={{ padding: "0 1rem" }}>
-					Sitester
+					Barnacle
 				</Title>
 				<div
 					style={{

@@ -5,7 +5,9 @@ import {
 	BiPointer,
 	BiStopwatch,
 	BiText,
+	BiStopCircle,
 } from "react-icons/bi"
+import { FaRegKeyboard, FaEquals } from "react-icons/fa"
 import { Edge, PointDelta } from "../shared/rectHelpers"
 import { Assert } from "../shared/typeHelpers"
 
@@ -45,6 +47,16 @@ export type Task =
 			type: "shortcut"
 			shortcut: string
 	  }
+	| {
+			type: "sleep"
+			sleepPeriod: number
+	  }
+	| {
+			type: "assertElementText"
+			text: string
+			exact: boolean
+			selector: string
+	  }
 
 type TaskOption = {
 	name: string
@@ -75,7 +87,9 @@ export const taskOptions = [
 		color: "red",
 		icon: <BiStopwatch color="red" />,
 	},
-	{ name: "shortcut", color: "violet", icon: <BiKey color="violet" /> },
+	{ name: "shortcut", color: "violet", icon: <FaRegKeyboard color="violet" /> },
+	{ name: "sleep", color: "gray", icon: <BiStopCircle color="gray" /> },
+	{ name: "assertElementText", color: "gray", icon: <FaEquals color="teal" /> },
 ] as const
 
 type containsAlLTypes = Assert<typeof taskOptions[number]["name"], Task["type"]>

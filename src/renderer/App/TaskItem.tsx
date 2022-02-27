@@ -123,6 +123,22 @@ export function TaskItem({ task, index }: { task: Task; index: number }) {
 							case "shortcut":
 								app.dispatch.editTask({ type: "shortcut", shortcut: "" }, index)
 								break
+							case "sleep":
+								app.dispatch.editTask({ type: "sleep", sleepPeriod: 0 }, index)
+								break
+							case "assertElementText":
+								app.dispatch.editTask(
+									{
+										type: "assertElementText",
+										text: "",
+										selector: "",
+										exact: false,
+									},
+									index
+								)
+								break
+							default:
+								break
 						}
 						console.log(e.target.value)
 						setSelectedType(taskOptions.find((t) => t.name === e.target.value))

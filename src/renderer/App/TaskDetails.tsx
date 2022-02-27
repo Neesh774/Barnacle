@@ -1,4 +1,14 @@
-import { ActionIcon, Button, NumberInput, TextInput } from "@mantine/core"
+import {
+	ActionIcon,
+	Button,
+	Checkbox,
+	Code,
+	ColorPicker,
+	NumberInput,
+	Switch,
+	Text,
+	TextInput,
+} from "@mantine/core"
 import * as React from "react"
 import { BiTrash } from "react-icons/bi"
 import { useEnvironment } from "../Environment"
@@ -19,6 +29,13 @@ export function TaskDetails({
 	const deltaYRef = React.useRef<HTMLInputElement>(null)
 	const deltaXRef = React.useRef<HTMLInputElement>(null)
 	const timeoutRef = React.useRef<HTMLInputElement>(null)
+	const exactRef = React.useRef<HTMLInputElement>(null)
+	const colorRef = React.useRef<HTMLInputElement>(null)
+
+	const [colorState, setColorState] = React.useState<string | null>(null)
+	const [colorType, setColorType] = React.useState<"color" | "background">(
+		"background"
+	)
 	const [saved, setSaved] = React.useState(true)
 
 	switch (task.type) {
@@ -463,7 +480,133 @@ export function TaskDetails({
 					</div>
 				</div>
 			)
+		case "sleep":
+			//number input
+			return (
+				<div style={{ display: "flex", flexDirection: "column" }}>
+					<NumberInput
+						ref={timeoutRef}
+						label="Timeout"
+						placeholder="1000"
+						defaultValue={task.sleepPeriod}
+						onChange={() =>
+							setSaved(
+								parseInt(timeoutRef.current?.value ?? "0") == task.sleepPeriod
+							)
+						}
+						error={timeoutRef.current?.value === ""}
+						hideControls
+						style={{ marginRight: "0.1rem" }}
+					/>
+					<div
+						style={{
+							marginTop: "0.4rem",
+							display: "flex",
+							alignItems: "center",
+						}}
+					>
+						<Button
+							color={color}
+							style={{
+								transition: "ease-in-out 0.3s",
+								width: "100%",
+							}}
+							variant="light"
+							disabled={saved}
+							onClick={() => {
+								app.dispatch.editTask(
+									{
+										...task,
+										sleepPeriod: parseInt(timeoutRef.current?.value ?? "0"),
+									},
+									index
+								)
+								setSaved(true)
+							}}
+						>
+							Save
+						</Button>
+						<ActionIcon
+							style={{ marginLeft: "0.4rem" }}
+							color="red"
+							onClick={() => app.dispatch.removeTask(index)}
+							variant="filled"
+						>
+							<BiTrash size="24" />
+						</ActionIcon>
+					</div>
+				</div>
+			)
+		case "assertElementText":
+			//text input, checkbox, text input
 
+			return (
+				<div
+					style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}
+				>
+					<TextInput
+						ref={selectorRef}
+						label="Selector"
+						placeholder="body"
+						defaultValue={task.selector}
+						onChange={() =>
+							setSaved(selectorRef.current?.value === task.selector)
+						}
+					/>
+					<TextInput
+						ref={textRef}
+						label="Text"
+						placeholder="Hello World"
+						defaultValue={task.text}
+						onChange={() => setSaved(textRef.current?.value === task.text)}
+					/>
+					<Checkbox
+						ref={exactRef}
+						label="Exact text?"
+						defaultChecked={task.exact}
+						onChange={() => setSaved(exactRef.current?.checked === task.exact)}
+					/>
+					<div
+						style={{
+							marginTop: "0.4rem",
+							display: "flex",
+							alignItems: "center",
+						}}
+					>
+						<Button
+							color={color}
+							style={{
+								transition: "ease-in-out 0.3s",
+								width: "100%",
+							}}
+							variant="light"
+							disabled={saved}
+							onClick={() => {
+								app.dispatch.editTask(
+									{
+										...task,
+										selector: selectorRef.current?.value ?? "",
+										text: textRef.current?.value ?? "",
+										exact: exactRef.current?.checked ?? false,
+									},
+									index
+								)
+								setSaved(true)
+							}}
+						>
+							Save
+						</Button>
+						<ActionIcon
+							style={{ marginLeft: "0.4rem" }}
+							color="red"
+							onClick={() => app.dispatch.removeTask(index)}
+							variant="filled"
+						>
+							<BiTrash size="24" />
+						</ActionIcon>
+					</div>
+				</div>
+			)
 		default:
 			return <div>Unknown task type</div>
 	}

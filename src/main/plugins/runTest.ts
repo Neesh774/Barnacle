@@ -25,7 +25,6 @@ export async function runTest(
 	options: TestOptions
 ) {
 	await renderer.call.startTest()
-
 	for (const [index, task] of enumerate(test)) {
 		try {
 			await runTask(task, renderer, windowRect, options)
@@ -140,10 +139,11 @@ async function runTask(
 		return rectOnScreen
 	}
 
-	async function measureElementWithText(cssSelector: string, text: string) {
+	async function measureElementWithText(cssSelector: string, text: string, exact: boolean = false) {
 		const rectOnWindow = await renderer.call.measureDOMWithText(
 			cssSelector,
-			text
+			text,
+			exact
 		)
 		const rectOnScreen = offsetRect(rectOnWindow, {
 			x: windowRect.left,
@@ -152,7 +152,6 @@ async function runTask(
 
 		return rectOnScreen
 	}
-
 	async function scrollElement(selector: string, delta: PointDelta) {
 		await renderer.call.scrollElement(selector, delta)
 	}
@@ -208,6 +207,13 @@ async function runTask(
 		}
 	}
 
+	async function assertElementText(cssSelector: string,
+		text: string, exact: boolean = false) {
+		const rect = await measureElementWithText(cssSelector, text, exact)
+		if (!rect) {
+			throw new Error(`Element not found: ${cssSelector} with text ${text}`)
+		}
+	}
 	switch (task.type) {
 		case "clickOnElement": {
 			await clickElement(task.selector, task.edge)
@@ -235,6 +241,17 @@ async function runTask(
 		}
 		case "waitForElementWithText": {
 			await waitForElementWithText(task.selector, task.text, task.waitPeriod)
+			return true
+		}
+		case "sleep": {
+			await sleep(task.sleepPeriod)
+			return true
+		}
+		case "assertElementText": {
+			await assertElementText(task.selector, task.text, task.exact)
+			return true
+		}
+		default: {
 			return true
 		}
 	}
