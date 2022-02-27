@@ -26,7 +26,7 @@ export function TaskDetails({
 				<div style={{ display: "flex", flexDirection: "column" }}>
 					<TextInput
 						required
-						label="Selector"
+						label="CSS Selector"
 						ref={selectorRef}
 						placeholder=".submit"
 						error={selectorRef.current?.value === ""}
@@ -132,7 +132,7 @@ export function TaskDetails({
 					<TextInput
 						required
 						ref={selectorRef}
-						label="Selector"
+						label="CSS Selector"
 						placeholder=".submit"
 						onChange={() =>
 							setSaved(selectorRef.current?.value == task.selector)
@@ -178,7 +178,7 @@ export function TaskDetails({
 					<TextInput
 						required
 						ref={selectorRef}
-						label="Selector"
+						label="CSS Selector"
 						placeholder=".submit"
 						onChange={() =>
 							setSaved(selectorRef.current?.value == task.selector)
@@ -243,7 +243,7 @@ export function TaskDetails({
 					<TextInput
 						required
 						ref={selectorRef}
-						label="Selector"
+						label="CSS Selector"
 						placeholder=".submit"
 						onChange={() =>
 							setSaved(selectorRef.current?.value == task.selector)
@@ -293,7 +293,7 @@ export function TaskDetails({
 					<TextInput
 						required
 						ref={selectorRef}
-						label="Selector"
+						label="CSS Selector"
 						placeholder=".submit"
 						onChange={() =>
 							setSaved(selectorRef.current?.value == task.selector)

@@ -79,6 +79,10 @@ function setOptions(state: RendererState, options: TestOptions): RendererState {
 	return { ...state, options }
 }
 
+function setUrl(state: RendererState, url: string): RendererState {
+	return { ...state, url }
+}
+
 const rendererReducers = {
 	appendTask,
 	removeTask,
@@ -86,6 +90,7 @@ const rendererReducers = {
 	clearTasks,
 
 	setOptions,
+	setUrl,
 
 	startSubmittingTest,
 	cancelSubmittingTest,

@@ -14,7 +14,7 @@ import { Environment, EnvironmentProvider } from "./Environment"
 import { TestHarnessPlugin } from "./plugins/TestHarnessPlugin"
 import { RendererApp } from "./RendererApp"
 import { RendererIPCPeer } from "./RendererIPC"
-import { TaskError } from "./RendererState"
+import { RendererState, TaskError } from "./RendererState"
 
 function setupReactApp(environment: Environment) {
 	const root = document.createElement("div")
@@ -143,18 +143,34 @@ function setupMainActions(main: MainHarness, app: RendererApp) {
 	main.answer.endTest((error?: TaskError) => {
 		app.dispatch.endTest(error)
 	})
+
+	main.answer.systemRefresh(async () => {
+		await main.call.saveState(app.state)
+	})
+
+	window.addEventListener("beforeunload", async () => {
+		await main.call.saveState(app.state)
+	})
+}
+
+async function initRendererState(main: MainHarness): Promise<RendererState> {
+	const initState = await main.call.loadState()
+	return (
+		initState || {
+			test: [],
+			url: "",
+			submitStatus: "standby",
+			options: { taskDelay: 1000, highlightBeforeClick: false, typeDelay: 50 },
+		}
+	)
 }
 
 async function main() {
 	const main = setupMain()
-	const app = new RendererApp(
-		{
-			test: [],
-			submitStatus: "standby",
-			options: { delay: 1000, highlightBeforeClick: false },
-		},
-		[TestHarnessPlugin(main)]
-	)
+
+	const state = await initRendererState(main)
+
+	const app = new RendererApp(state, [TestHarnessPlugin(main)])
 	setupMainActions(main, app)
 
 	const environment: Environment = {

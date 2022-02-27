@@ -33,7 +33,7 @@ export async function runTest(
 			await renderer.call.endTest({ index, message: e.message as string })
 			return
 		}
-		await sleep(options.delay)
+		await sleep(options.taskDelay)
 		await renderer.call.incrementTaskIndex()
 	}
 
@@ -165,7 +165,7 @@ async function runTask(
 
 	async function type(str: string) {
 		await nut.keyboard.type(str)
-		await sleep(50)
+		await sleep(options.typeDelay)
 	}
 
 	async function waitForElement(cssSelector: string, waitPeriod = 500) {

@@ -9,18 +9,11 @@ import {
 	NumberInput,
 	Text,
 	TextInput,
-	ThemeIcon,
 	Title,
 	useAccordionState,
 } from "@mantine/core"
 import * as React from "react"
-import {
-	BiPlus,
-	BiTrash,
-	BiChevronUp,
-	BiChevronDown,
-	BiRefresh,
-} from "react-icons/bi"
+import { BiPlus, BiRefresh, BiTrash } from "react-icons/bi"
 import { useEnvironment } from "../Environment"
 import { useApp } from "../RendererApp"
 import { Task, taskOptions } from "../RendererState"
@@ -225,11 +218,11 @@ export function App() {
 							<NumberInput
 								label="Task delay"
 								description="Delay between each task item"
-								value={state.options.delay}
+								value={state.options.taskDelay}
 								onChange={(value) => {
 									app.dispatch.setOptions({
 										...state.options,
-										delay: value || 0,
+										taskDelay: value || 0,
 									})
 								}}
 							/>
@@ -244,6 +237,17 @@ export function App() {
 									})
 								}}
 							/>
+							<NumberInput
+								label="Type delay"
+								description="Delay between typing characters"
+								value={state.options.typeDelay}
+								onChange={(value) => {
+									app.dispatch.setOptions({
+										...state.options,
+										typeDelay: value || 0,
+									})
+								}}
+							/>
 						</Group>
 					</Accordion.Item>
 				</Accordion>
@@ -254,9 +258,11 @@ export function App() {
 }
 
 export function Browser() {
-	const [testSite, setTestSite] = React.useState("")
+	const { app } = useEnvironment()
+	const url = useApp((state) => state.url)
+	console.log({ url })
+	const [loaded, setLoaded] = React.useState(true)
 	const iframeRef = React.useRef<HTMLIFrameElement>(null)
-	const siteInput = React.useRef<HTMLInputElement | null>(null)
 
 	return (
 		<div
@@ -277,23 +283,35 @@ export function Browser() {
 				}}
 			>
 				<TextInput
-					ref={siteInput}
 					placeholder="https://example.org"
 					type="url"
 					size="xs"
 					style={{ width: "100%" }}
+					value={url}
+					onChange={(event) => {
+						app.dispatch.setUrl(event.currentTarget.value || "")
+						setLoaded(false)
+					}}
 				/>
 				<Button
 					style={{ marginLeft: "0.2rem" }}
-					onClick={(e: React.MouseEvent) =>
-						setTestSite(siteInput.current ? siteInput.current.value : "")
-					}
+					onClick={() => {
+						const iframe = iframeRef.current
+						if (!iframe) return
+						iframe.src = url
+						setLoaded(true)
+					}}
 					size="xs"
 				>
 					Load
 				</Button>
 				<ActionIcon
-					onClick={() => (iframeRef.current?.src = testSite || "")}
+					onClick={() => {
+						const iframe = iframeRef.current
+						if (!iframe) return
+						iframe.src = url
+						setLoaded(true)
+					}}
 					size="md"
 					variant="filled"
 					color="blue"
@@ -302,7 +320,7 @@ export function Browser() {
 					<BiRefresh size={20} />
 				</ActionIcon>
 			</div>
-			{testSite ? (
+			{loaded && url !== "" ? (
 				<iframe
 					id="iframe"
 					style={{
@@ -311,7 +329,7 @@ export function Browser() {
 						height: "100%",
 					}}
 					ref={iframeRef}
-					src={testSite}
+					src={url}
 				/>
 			) : (
 				<div
