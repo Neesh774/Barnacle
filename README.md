@@ -18,7 +18,7 @@ A simple and fast end-to-end testing app for web applications. Built for the [Bu
 - Scroll
 ## Demo
 
-<a href="https://drive.google.com/file/d/1R050sL8XXLrwc6ikIwG-Vbdb6kTEXzf7/view?usp=sharing">Watch Video</a>
+<a href="https://drive.google.com/file/d/11QT8nEQHVJf_hHHniMIm4PpFUsEqlXdF/view?usp=sharing">Watch Video</a>
 
 ## Stack
 - Electron
